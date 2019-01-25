@@ -28,22 +28,11 @@
 ########################################################################################################################
 
 require 'bundler/gem_tasks'
+require_relative 'build_openstudio_gems.rb'
 
 desc 'Create openstudio-gems package for OpenStudio CLI'
 task :make_package do
-
-  new_env = {}
-  new_env['BUNDLER_ORIG_MANPATH'] = nil
-  new_env['BUNDLER_ORIG_PATH'] = nil
-  new_env['BUNDLER_VERSION'] = nil
-  new_env['BUNDLE_BIN_PATH'] = nil
-  new_env['RUBYLIB'] = nil
-  new_env['RUBYOPT'] = nil
-  new_env['BUNDLE_GEMFILE'] = nil
-  new_env['BUNDLE_PATH'] = nil
-          
-  system(new_env, 'ruby build_openstudio_gems.rb ./build tar 2.2.4')
+  make_package('./build', 'tar', '2.2.4')
 end
-
 
 task :default => :make_package
