@@ -2,17 +2,15 @@ require 'fileutils'
 require 'time'
 require 'rbconfig'
 
-
-
 def system_call(cmd)
   new_env = {}
   new_env['BUNDLER_ORIG_MANPATH'] = nil
   new_env['BUNDLER_ORIG_PATH'] = nil
   new_env['BUNDLER_VERSION'] = nil
   new_env['BUNDLE_BIN_PATH'] = nil
+  new_env['BUNDLE_GEMFILE'] = nil
   new_env['RUBYLIB'] = nil
   new_env['RUBYOPT'] = nil
-  new_env['BUNDLE_GEMFILE'] = nil
   new_env['BUNDLE_PATH'] = nil
   
   puts cmd
@@ -20,6 +18,10 @@ def system_call(cmd)
 end
 
 def make_package(install_dir, tar_exe, expected_ruby_version)
+
+  ENV.each_pair do |k,v|
+    puts "'#{k}' = '#{v}'"
+  end
 
   ENV['PATH'] = "#{ENV['PATH']}#{File::PATH_SEPARATOR}#{File.dirname(tar_exe)}"
 
