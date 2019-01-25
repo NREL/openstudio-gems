@@ -5,8 +5,8 @@ language: ruby
 rvm:
   - 2.2.4
 before_install: 
-  - rvm @global do gem uninstall bundler
-  - rvm @global do gem install bundler -v 1.14.4
+  - rvm gemset create openstudio
+  - rvm 2.2.4@openstudio
   - gem install bundler -v 1.14.4
   - gem install rake -v 12.3.1
 install: 
