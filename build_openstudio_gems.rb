@@ -19,6 +19,9 @@ end
 
 def make_package(install_dir, tar_exe, expected_ruby_version)
 
+  puts "hello from make_package"
+  STDOUT.flush
+  
   ENV.each_pair do |k,v|
     puts "'#{k}' = '#{v}'"
   end
