@@ -1,0 +1,20 @@
+/.bundle/
+/.yardoc
+/.ruby-version
+/gems
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+/build/
+
+# ignore tar.gz files
+.tar.gz
+
+# rspec failure tracking
+.rspec_status
+
+# Ignore IDE files
+/.idea
