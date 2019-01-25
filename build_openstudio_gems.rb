@@ -7,8 +7,18 @@ tar_exe = ARGV[1]
 expected_ruby_version = ARGV[2]
 
 def system_call(cmd)
+  new_env = {}
+  new_env['BUNDLER_ORIG_MANPATH'] = nil
+  new_env['BUNDLER_ORIG_PATH'] = nil
+  new_env['BUNDLER_VERSION'] = nil
+  new_env['BUNDLE_BIN_PATH'] = nil
+  new_env['RUBYLIB'] = nil
+  new_env['RUBYOPT'] = nil
+  new_env['BUNDLE_GEMFILE'] = nil
+  new_env['BUNDLE_PATH'] = nil
+  
   puts cmd
-  system(cmd)
+  system(new_env, cmd)
 end
 
 ENV['PATH'] = "#{ENV['PATH']}#{File::PATH_SEPARATOR}#{File.dirname(tar_exe)}"
