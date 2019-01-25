@@ -14,10 +14,10 @@
 #  derived from this software without specific prior written permission from the respective party.
 #
 #  (4) Other than as required in clauses (1) and (2), distributions in any form of modifications or other derivative works
-#  may not use the "OpenStudio" trademark, "OS", "os", or any other confusingly similar designation without specific prior
+#  may not use the 'OpenStudio' trademark, 'OS', 'os', or any other confusingly similar designation without specific prior
 #  written permission from Alliance for Sustainable Energy, LLC.
 #
-#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER(S) AND ANY CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER(S) AND ANY CONTRIBUTORS 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 #  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 #  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER(S), ANY CONTRIBUTORS, THE UNITED STATES GOVERNMENT, OR THE UNITED
 #  STATES DEPARTMENT OF ENERGY, NOR ANY OF THEIR EMPLOYEES, BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
@@ -27,20 +27,22 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################################################################
 
-require "bundler/gem_tasks"
+require 'bundler/gem_tasks'
 
 desc 'Create openstudio-gems package for OpenStudio CLI'
 task :make_package do
-  # depends on system Ruby and Git, Ruby must be same version as OpenStudio
-  #if (WIN32)
-  #  file(GLOB POTENTIAL_RUBY_LOCATIONS "c:/ruby*2.2.*/bin")
-   # get_filename_component(POTENTIAL_TAR_LOCATIONS ${GIT_EXECUTABLE} DIRECTORY )
-  #  list(APPEND POTENTIAL_TAR_LOCATIONS "${POTENTIAL_TAR_LOCATIONS}/../bin" "${POTENTIAL_TAR_LOCATIONS}/../usr/bin")
-  #endif()
-  #find_program(RUBY_EXE ruby HINTS ${POTENTIAL_RUBY_LOCATIONS})
-  #find_program(TAR_EXE tar HINTS ${POTENTIAL_TAR_LOCATIONS})
-  #set(OPENSTUDIO_GEMS_DIR "${CMAKE_BINARY_DIR}/openstudio-gems")
-  system("ruby build_openstudio_gems.rb ./build tar 2.2.4")
+
+  new_env = {}
+  new_env['BUNDLER_ORIG_MANPATH'] = nil
+  new_env['BUNDLER_ORIG_PATH'] = nil
+  new_env['BUNDLER_VERSION'] = nil
+  new_env['BUNDLE_BIN_PATH'] = nil
+  new_env['RUBYLIB'] = nil
+  new_env['RUBYOPT'] = nil
+  new_env['BUNDLE_GEMFILE'] = nil
+  new_env['BUNDLE_PATH'] = nil
+          
+  system(new_env, 'ruby build_openstudio_gems.rb ./build tar 2.2.4')
 end
 
 

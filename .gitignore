@@ -2,6 +2,7 @@
 /.yardoc
 /.ruby-version
 /gems
+/Gemfile.lock
 /_yardoc/
 /coverage/
 /doc/
