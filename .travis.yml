@@ -5,9 +5,8 @@ cache: bundler
 rvm:
   - 2.2.4
 before_install: 
-  - gem uninstall bundler --all
-  - gem install bundler -v 1.14
+  - gem install bundler -v 1.14.4
 install: 
-  - bundle install
+  - bundle _1.14.4_ install
 script:
-  - bundle exec rake make_package
+  - bundle _1.14.4_ exec rake make_package
