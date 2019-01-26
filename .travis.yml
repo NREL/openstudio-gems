@@ -1,11 +1,13 @@
 ---
 sudo: false
 language: ruby
-cache: bundler
+#cache: bundler
 rvm:
   - 2.5.1
-before_install: gem install bundler -v 1.14
+before_install: 
+  - gem install bundler -v 1.14.4
+  - gem install rake -v 12.3.1
 install: 
-  - bundle install
+  - bundle _1.14.4_ install
 script:
   - bundle exec rake make_package
