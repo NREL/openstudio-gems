@@ -18,13 +18,10 @@ def system_call(cmd)
 end
 
 def make_package(install_dir, tar_exe, expected_ruby_version)
-
-  puts "hello from make_package"
-  STDOUT.flush
   
-  ENV.each_pair do |k,v|
-    puts "'#{k}' = '#{v}'"
-  end
+  #ENV.each_pair do |k,v|
+  #  puts "'#{k}' = '#{v}'"
+  #end
 
   ENV['PATH'] = "#{ENV['PATH']}#{File::PATH_SEPARATOR}#{File.dirname(tar_exe)}"
 
@@ -59,6 +56,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   bundle_version = bundle_version.gsub(/['=~> ]/, '')
 
   puts "Installing bundler #{bundle_version}"
+  system_call("gem install bundler --version #{bundle_version}")
   system_call("gem install bundler --version #{bundle_version} --install-dir='#{install_dir}/ruby/#{ruby_gem_dir}'")
 
   ENV['BUNDLE_WITHOUT'] = 'test'
@@ -77,10 +75,12 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
 
   system_call("#{bundle_exe} _#{bundle_version}_ lock --add_platform ruby")
 
+  # DLM: don't remove system platforms, that creates problems when running bundle on the command line
+  # these will be removed later
   platforms_to_remove = ['mri', 'mingw', 'x64_mingw', 'x64-mingw32', 'rbx', 'jruby', 'mswin', 'mswin64']
-  platforms_to_remove.each do |platform|
-    system_call("#{bundle_exe} _#{bundle_version}_ lock --remove_platform #{platform}")
-  end
+  #platforms_to_remove.each do |platform|
+  #  system_call("#{bundle_exe} _#{bundle_version}_ lock --remove_platform #{platform}")
+  #end
 
   FileUtils.rm_rf("#{install_dir}/ruby/#{ruby_gem_dir}/cache")
 
@@ -127,10 +127,37 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   # copy Gemfile and Gemfile.lock
   FileUtils.cp('Gemfile', "#{install_dir}/.")
   FileUtils.cp('Gemfile.lock', "#{install_dir}/.")
+  
+  # remove platforms here
+  gemfile_lock = ''
+  File.open("#{install_dir}/Gemfile.lock", 'r') do |file|
+    while line = file.gets
+      skip = false
+      platforms_to_remove.each do |platform|
+        if /$\s?#{platform}/.match(line)
+          skip = true
+          puts "Skipping: #{line}"
+        end
+      end
+      gemfile_lock += line if !skip
+    end
+  end
+  File.open("#{install_dir}/Gemfile.lock", 'w') do |file|
+    file.puts(gemfile_lock)
+    # make sure data is written to the disk one way or the other
+    begin
+      file.fsync
+    rescue
+      file.flush
+    end    
+  end
 
   Dir.chdir("#{install_dir}/..")
 
   new_file_name = "openstudio3-gems-#{DateTime.now.strftime("%Y%m%d")}.tar.gz"
+  
+  FileUtils.rm_f(new_file_name) if File.exists?(new_file_name)
+  
   system_call("\"#{tar_exe}\" -zcvf \"#{new_file_name}\" \"openstudio-gems\"")
 
   puts
