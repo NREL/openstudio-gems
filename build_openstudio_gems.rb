@@ -130,7 +130,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
 
   Dir.chdir("#{install_dir}/..")
 
-  new_file_name = "openstudio-gems-#{DateTime.now.strftime("%Y%m%d")}.tar.gz"
+  new_file_name = "openstudio3-gems-#{DateTime.now.strftime("%Y%m%d")}.tar.gz"
   system_call("\"#{tar_exe}\" -zcvf \"#{new_file_name}\" \"openstudio-gems\"")
 
   puts
