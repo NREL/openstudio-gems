@@ -27,21 +27,13 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################################################################
 
-puts "hello from Rakefile"
-STDOUT.flush
-
 require 'bundler/gem_tasks'
 require_relative 'build_openstudio_gems.rb'
 
-puts "hello from Rakefile 2"
-STDOUT.flush
-
 desc 'Create openstudio-gems package for OpenStudio CLI'
 task :make_package do
-  puts "hello from Raketask"
-  STDOUT.flush
-
-  make_package('./build', 'tar', '2.2.4')
+  # DLM: currently this is running in the root dir, might want to copy Gemfile somewhere else to run
+  make_package('./openstudio-gems', 'tar', '2.2.4')
 end
 
 task :default => :make_package

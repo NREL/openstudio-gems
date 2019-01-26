@@ -5,9 +5,9 @@ language: ruby
 rvm:
   - 2.2.4
 before_install: 
-  - gem install bundler -v 1.14.4
-  - gem install rake -v 12.3.1
+  - gem install bundler -v '1.17.1'
+  - gem install bundler -v '~> 1.17.1'
 install: 
-  - bundle _1.14.4_ install
+  - bundle install
 script:
   - bundle exec rake make_package
