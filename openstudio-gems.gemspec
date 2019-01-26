@@ -20,4 +20,14 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
+
+  spec.add_development_dependency 'rake', '~> 12.3'
+  
+  spec.add_dependency 'openstudio-extension'
+  spec.add_dependency 'openstudio-workflow', '= 1.3.3'
+  spec.add_dependency 'openstudio-standards', '= 0.2.7'
+  spec.add_dependency 'openstudio_measure_tester', '= 0.1.7'
+  
+  spec.add_dependency 'bundler', '~> 1.9'
+  spec.add_dependency 'parallel', '~> 1.12.1'
 end
