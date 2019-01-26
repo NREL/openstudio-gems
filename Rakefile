@@ -41,7 +41,7 @@ task :make_package do
   puts "hello from Raketask"
   STDOUT.flush
 
-  make_package('./build', 'tar', '2.2.4')
+  make_package('./build', 'tar', '2.5.1')
 end
 
 task :default => :make_package
