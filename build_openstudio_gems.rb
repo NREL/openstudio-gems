@@ -56,6 +56,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   bundle_version = bundle_version.gsub(/['=~> ]/, '')
 
   puts "Installing bundler #{bundle_version}"
+  system_call("gem install bundler --version #{bundle_version}")
   system_call("gem install bundler --version #{bundle_version} --install-dir='#{install_dir}/ruby/#{ruby_gem_dir}'")
 
   ENV['BUNDLE_WITHOUT'] = 'test'
