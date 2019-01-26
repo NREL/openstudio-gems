@@ -3,6 +3,7 @@
 # gems listed here must be able to read resource files from the embedded files location
 # need to adjust hard coded paths in embedded_help.rb when adding new gems
 source 'http://rubygems.org'
+ruby "2.2.4"
 
 #gem 'openstudio-extension', '= 0.0.1'
 #gem 'openstudio-extension', :github => 'NREL/OpenStudio-extension-gem', :ref => '3e62211b29e28d341c4a84794f35a772c91a2145'
@@ -22,3 +23,4 @@ gem 'openstudio_measure_tester', '= 0.1.7' # This includes the dependencies for 
 
 gem 'bundler', '~> 1.17.1'
 gem 'parallel', '~> 1.12.1'
+gem 'json_pure', '~> 2.1.0'
