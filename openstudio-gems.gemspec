@@ -1,7 +1,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = 'openstudio-gems'
-  spec.version       = '2.7.2'
+  spec.version       = '3.0.0'
   spec.authors       = ['Nicholas Long', 'Dan Macumber', 'Katherine Fleming']
   spec.email         = ['nicholas.long@nrel.gov', 'daniel.macumber@nrel.gov', 'katherine.fleming@nrel.gov']
 
