@@ -21,13 +21,19 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'rake', '~> 12.3'
-  
-  spec.add_dependency 'openstudio-extension'
+  # gem version is specified in gemspec, gem source/location (e.g. github branch) can be specified in Gemfile
+  # runtime dependency versions can be loosened while in development on branches if needed
+  # runtime dependency versions should be specified as exact versions when merged to master or develop
+  spec.add_dependency 'openstudio-extension', '= 0.1.0'
   spec.add_dependency 'openstudio-workflow', '= 1.3.3'
   spec.add_dependency 'openstudio-standards', '= 0.2.7'
   spec.add_dependency 'openstudio_measure_tester', '= 0.1.7'
+  spec.add_dependency 'parallel', '= 1.12.1'
   
-  spec.add_dependency 'bundler', '~> 1.9'
-  spec.add_dependency 'parallel', '~> 1.12.1'
+  # development dependencies need not be specified so strictly
+  # these will not be enforced by consumers of this spec
+  # bundle version is parsed by build_openstudio_gems.rb, specify all three numbers
+  spec.add_development_dependency 'bundler', '~> 1.17.1'
+  spec.add_development_dependency 'rake', '~> 12.3'
+  spec.add_development_dependency 'json_pure', '~> 2.1'
 end
