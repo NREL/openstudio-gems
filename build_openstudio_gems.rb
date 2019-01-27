@@ -43,9 +43,9 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   end
 
   bundle_version = nil
-  File.open('Gemfile', 'r') do |f|
+  File.open('openstudio-gems.gemspec', 'r') do |f|
     while line = f.gets
-      if md = /gem 'bundler',(.*)/.match(line)
+      if md = /add_development_dependency 'bundler',(.*)/.match(line)
         bundle_version = md[1].strip
       end
     end
@@ -134,7 +134,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     while line = file.gets
       skip = false
       platforms_to_remove.each do |platform|
-        if /$\s?#{platform}/.match(line)
+        if /^\s*#{platform}/.match(line)
           skip = true
           puts "Skipping: #{line}"
         end
