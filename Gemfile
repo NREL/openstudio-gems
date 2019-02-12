@@ -13,7 +13,7 @@ gemspec
 
 #gem 'openstudio-extension', '= 0.0.1'
 #gem 'openstudio-extension', :github => 'NREL/OpenStudio-extension-gem', :ref => '3e62211b29e28d341c4a84794f35a772c91a2145'
-gem 'openstudio-extension', :github => 'NREL/OpenStudio-extension-gem', :ref => 'bundle_methods'
+gem 'openstudio-extension', :github => 'NREL/OpenStudio-extension-gem', :ref => 'develop'
 #gem 'openstudio-extension', :github => 'NREL/OpenStudio-extension-gem', :tag => 'v0.0.1'
 
 gem 'openstudio-workflow', '= 1.3.3'
