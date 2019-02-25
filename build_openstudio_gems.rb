@@ -124,7 +124,8 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   FileUtils.rm_rf("#{workflow_gem_dir}/spec")
   FileUtils.rm_rf("#{workflow_gem_dir}/test")
 
-  # copy Gemfile and Gemfile.lock
+  # copy gemspec, Gemfile, and Gemfile.lock
+  FileUtils.cp('openstudio-gems.gemspec', "#{install_dir}/.")
   FileUtils.cp('Gemfile', "#{install_dir}/.")
   FileUtils.cp('Gemfile.lock', "#{install_dir}/.")
   
