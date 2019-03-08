@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   # runtime dependency versions should be specified as exact versions when merged to master or develop
   spec.add_dependency 'openstudio-extension', '0.1.0'
   spec.add_dependency 'openstudio-workflow', '1.3.3'
-  spec.add_dependency 'openstudio-standards', '0.2.7'
+  spec.add_dependency 'openstudio-standards', '0.2.8'
   spec.add_dependency 'openstudio_measure_tester', '0.1.7'
   spec.add_dependency 'parallel', '1.12.1'
   
