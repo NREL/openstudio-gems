@@ -19,7 +19,7 @@ gem 'openstudio-extension', :github => 'NREL/OpenStudio-extension-gem', :ref => 
 gem 'openstudio-workflow', '= 1.3.3'
 #gem 'openstudio-workflow', :github => 'NREL/OpenStudio-workflow-gem', :ref => '3e62211b29e28d341c4a84794f35a772c91a2145'
 
-gem 'openstudio-standards', '= 0.2.7'
+gem 'openstudio-standards', '= 0.2.8'
 #gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => '77cc9971e00b603224a074bb21ce44aa61de7c3d'
 
 gem 'simplecov', :github => 'NREL/simplecov', :ref => '98c33ffcb40fe867857a44b4d1a308f015b32e27'
