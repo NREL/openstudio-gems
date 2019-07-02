@@ -10,9 +10,10 @@
 /spec/reports/
 /tmp/
 /build/
+/openstudio-gems/
 
 # ignore tar.gz files
-.tar.gz
+*.tar.gz
 
 # rspec failure tracking
 .rspec_status
