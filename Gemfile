@@ -3,7 +3,7 @@
 # gems listed here must be able to read resource files from the embedded files location
 # need to adjust hard coded paths in embedded_help.rb when adding new gems
 source 'http://rubygems.org'
-ruby "2.5.1"
+ruby "~> 2.5.1"
 
 # Specify gem's dependencies in openstudio-gems.gemspec, this is what consumers of the gem will read
 gemspec
