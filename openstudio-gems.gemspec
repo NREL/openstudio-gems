@@ -24,10 +24,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'parallel', '1.12.1'
   spec.add_dependency 'json_pure', '2.2'
   spec.add_dependency 'pycall', '1.2.1'
-  
+
   # development dependencies need not be specified so strictly
   # these will not be enforced by consumers of this spec
   # bundle version is parsed by build_openstudio_gems.rb, specify all three numbers
   spec.add_development_dependency 'rake', '~> 12.3'
-  spec.add_development_dependency 'bundler', '~> 1.17.1'
+  spec.add_development_dependency 'bundler', '~> 2.0.0'
 end
