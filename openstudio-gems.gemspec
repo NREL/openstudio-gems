@@ -29,5 +29,5 @@ Gem::Specification.new do |spec|
   # these will not be enforced by consumers of this spec
   # bundle version is parsed by build_openstudio_gems.rb, specify all three numbers
   spec.add_development_dependency 'rake', '~> 12.3'
-  spec.add_development_dependency 'bundler', '~> 2.0.0'
+  spec.add_development_dependency 'bundler', '~> 2.1.0'
 end
