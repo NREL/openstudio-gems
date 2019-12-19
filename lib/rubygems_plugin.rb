@@ -108,8 +108,8 @@ class StaticExtensionPlugin
 
         File.open(@init_file_name, "a") do |f|
           f.puts "init_#{extname}()"
-          f.puts "rb_provides(#{extname})"
-          f.puts "rb_provides(#{extname}.so)"
+          f.puts "rb_provides(\"#{extname}\")"
+          f.puts "rb_provides(\"#{extname}.so\")"
         end
 
         File.open(@exports_file_name, "a") do |f|
