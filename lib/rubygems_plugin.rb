@@ -7,7 +7,7 @@ class StaticExtensionPlugin
     @dir =  __dir__
     @install_dir = File.expand_path(@dir + "/../openstudio-gems")
     @exports_file_name = @dir + "/../openstudio-gems/export-extensions.cmake"
-    @init_file_name = @dir + "/../openstudio-gems/init-extensions.cpp"
+    @ext_init_file_name = @dir + "/../openstudio-gems/ext-init.hpp"
 
     create_exports_file
     create_init_file
@@ -55,7 +55,7 @@ class StaticExtensionPlugin
   end
   
   def create_init_file
-    f = File.new(@init_file_name, "w")
+    f = File.new(@ext_init_file_name, "w")
     f.close
   end
 
@@ -106,10 +106,19 @@ class StaticExtensionPlugin
           end
         end
 
-        File.open(@init_file_name, "a") do |f|
-          f.puts "init_#{extname}()"
-          f.puts "rb_provides(\"#{extname}\")"
-          f.puts "rb_provides(\"#{extname}.so\")"
+        File.open(@ext_init_file_name, "a") do |f|
+          f.puts "extern \"C\" {"
+          f.puts "  void Init_#{extname}(void);"
+          f.puts "}"
+          f.puts
+          f.puts "namespace embedded_help {"
+          f.puts "  inline void init_#{extname}() {"
+          f.puts "    Init_#{extname}();"
+          f.puts "    rb_provide(\"#{extname}\");"
+          f.puts "    rb_provide(\"#{extname}.so\");"
+          f.puts "  }"
+          f.puts "}"
+          f.puts
         end
 
         File.open(@exports_file_name, "a") do |f|
