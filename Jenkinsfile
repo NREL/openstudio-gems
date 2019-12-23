@@ -2,4 +2,4 @@
 
 @Library('cbci_shared_libs@openstudio_gems_native') _
 
-openstudio3_gems()
+openstudio3_gems_linux()
