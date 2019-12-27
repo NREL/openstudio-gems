@@ -1,3 +1,5 @@
+# currently disabled https://travis-ci.org/NREL/openstudio-gems/settings
+# Jenkins CI replaces travis job
 ---
 sudo: false
 language: ruby
