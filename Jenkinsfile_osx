@@ -2,4 +2,4 @@
 
 @Library('cbci_shared_libs') _
 
-openstudio3_gems_osx()
+openstudio_gems_osx()
