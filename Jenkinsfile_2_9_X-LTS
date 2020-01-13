@@ -2,4 +2,4 @@
 
 @Library('cbci_shared_libs') _
 
-openstudio_gems()
+openstudio_gems_2_9_X-LTS()
