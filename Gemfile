@@ -24,7 +24,7 @@ gem 'openstudio-standards', '= 0.2.10'
 
 gem 'simplecov', :github => 'NREL/simplecov', :ref => '98c33ffcb40fe867857a44b4d1a308f015b32e27'
 
-gem 'openstudio_measure_tester', '= 0.1.7' # This includes the dependencies for running unit tests, coverage, and rubocop
+gem 'openstudio_measure_tester', '= 0.2.0' # This includes the dependencies for running unit tests, coverage, and rubocop
 #gem 'openstudio_measure_tester', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '273d1f1a5c739312688ea605ef4a5b6e7325332c'
 
 gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
