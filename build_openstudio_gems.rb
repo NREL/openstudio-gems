@@ -85,6 +85,8 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
 
   system_call("#{bundle_exe} _#{bundle_version}_ install --without=test --path='#{install_dir}'")
 
+  system_call("#{bundle_exe} _#{bundle_version}_ install --without=test --path='#{install_dir}'")
+
   system_call("#{bundle_exe} _#{bundle_version}_ lock --add_platform ruby")
 
   # DLM: don't remove system platforms, that creates problems when running bundle on the command line
