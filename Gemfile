@@ -16,7 +16,7 @@ gem 'openstudio-extension', '= 0.2.0'
 #gem 'openstudio-extension', :github => 'NREL/OpenStudio-extension-gem', :ref => 'develop'
 #gem 'openstudio-extension', :github => 'NREL/OpenStudio-extension-gem', :tag => 'v0.1.0'
 
-gem 'openstudio-workflow', '= 1.3.4'
+gem 'openstudio-workflow', '= 1.3.5'
 #gem 'openstudio-workflow', :github => 'NREL/OpenStudio-workflow-gem', :ref => '3e62211b29e28d341c4a84794f35a772c91a2145'
 
 gem 'openstudio-standards', '= 0.2.11.rc1'
