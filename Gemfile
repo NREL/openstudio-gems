@@ -19,7 +19,7 @@ gem 'openstudio-extension', '= 0.2.0'
 gem 'openstudio-workflow', '= 1.3.4'
 #gem 'openstudio-workflow', :github => 'NREL/OpenStudio-workflow-gem', :ref => '3e62211b29e28d341c4a84794f35a772c91a2145'
 
-gem 'openstudio-standards', '= 0.2.10'
+gem 'openstudio-standards', '= 0.2.11.rc1'
 #gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => '77cc9971e00b603224a074bb21ce44aa61de7c3d'
 
 gem 'openstudio_measure_tester', '= 0.2.0' # This includes the dependencies for running unit tests, coverage, and rubocop
