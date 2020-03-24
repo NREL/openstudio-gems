@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   # runtime dependency versions can be loosened while in development on branches if needed
   # runtime dependency versions should be specified as exact versions when merged to master or develop
   spec.add_dependency 'openstudio-extension', '0.2.0'
-  spec.add_dependency 'openstudio-workflow', '1.3.5'
+  spec.add_dependency 'openstudio-workflow', '2.0.0.pre1'
   #spec.add_dependency 'openstudio-standards', '0.2.10'
   spec.add_dependency 'openstudio_measure_tester', '0.2.0'
   spec.add_dependency 'parallel', '1.12.1'
