@@ -25,6 +25,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'parallel', '1.19.1'
   #spec.add_dependency 'pycall', '1.3.0.dev'
 
+  # 20200324 TJC removed json_pure as json native is enabled for all platforms
+  #spec.add_dependency 'json_pure', '2.2'
+
   # development dependencies need not be specified so strictly
   # these will not be enforced by consumers of this spec
   # bundle version is parsed by build_openstudio_gems.rb, specify all three numbers
