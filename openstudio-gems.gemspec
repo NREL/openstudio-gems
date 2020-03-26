@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   # runtime dependency versions should be specified as exact versions when merged to master or develop
   spec.add_dependency 'openstudio-extension', '0.2.1'
   spec.add_dependency 'openstudio-workflow', '2.0.0'
-  spec.add_dependency 'openstudio_measure_tester', '0.2.0'
+  spec.add_dependency 'openstudio_measure_tester', '0.2.1'
   #spec.add_dependency 'openstudio-standards', '0.2.11-rc1'
   spec.add_dependency 'parallel', '1.19.1'
   #spec.add_dependency 'pycall', '1.3.0.dev'
@@ -32,5 +32,5 @@ Gem::Specification.new do |spec|
   # these will not be enforced by consumers of this spec
   # bundle version is parsed by build_openstudio_gems.rb, specify all three numbers
   spec.add_development_dependency 'bundler', '~> 2.1'
-  spec.add_development_dependency 'rake', '~> 12.3.1'
+  spec.add_development_dependency 'rake', '~> 13.0'
 end
