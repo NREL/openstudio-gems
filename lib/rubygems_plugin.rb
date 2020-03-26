@@ -19,21 +19,21 @@ class StaticExtensionPlugin
     path[0..Dir.pwd.length-1] = '.' if path.start_with?(Dir.pwd)
     path
   end
-  
+
   def self.make_static(dest_path, results)
     unless File.exist? 'Makefile' then
       raise Gem::InstallError, 'Makefile not found'
     end
-  
+
     # try to find make program from Ruby configure arguments first
     RbConfig::CONFIG['configure_args'] =~ /with-make-prog\=(\w+)/
     make_program = ENV['MAKE'] || ENV['make'] || $1
     unless make_program then
       make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
     end
-  
+
     destdir = '"DESTDIR=%s"' % ENV['DESTDIR'] if RUBY_VERSION > '2.0'
-  
+
     ['static'].each do |target|
       # Pass DESTDIR via command line to override what's in MAKEFLAGS
       cmd = [
@@ -48,12 +48,12 @@ class StaticExtensionPlugin
       end
     end
   end
-  
+
   def create_exports_file
     f = File.new(@exports_file_name, "w")
     f.close
   end
-  
+
   def create_init_file
     f = File.new(@ext_init_file_name, "w")
     f.close
@@ -68,9 +68,9 @@ class StaticExtensionPlugin
         extname = Pathname.new(extension).parent.basename
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
         target_name = "ruby-ext-#{extname}"
-    
+
         tmp_dest = Dir.mktmpdir(".gem.", ".")
-    
+
         Dir.chdir extension_dir do
           Tempfile.open %w"siteconf .rb", "." do |siteconf|
             siteconf.puts "require 'mkmf'"
@@ -81,12 +81,12 @@ class StaticExtensionPlugin
               siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
               siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
             end
-    
+
             siteconf.close
-    
+
             cmd = [Gem.ruby, "-r", StaticExtensionPlugin.get_relative_path(siteconf.path), File.basename(extension)].join ' '
             results = []
-    
+
             begin
               Gem::Ext::Builder.run cmd, results
             ensure
@@ -100,9 +100,9 @@ class StaticExtensionPlugin
               end
               siteconf.unlink
             end
-    
+
             StaticExtensionPlugin.make_static extension_dir, results
-    
+
           end
         end
 
