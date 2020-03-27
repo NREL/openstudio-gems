@@ -66,6 +66,12 @@ class StaticExtensionPlugin
 
         extension_dir = File.expand_path File.join installer.spec.full_gem_path, File.dirname(extension)
         extname = Pathname.new(extension).parent.basename
+
+        # work around for jaro_winkler
+        if extname.to_s == "jaro_winkler"
+          extname = "jaro_winkler_ext"
+        end
+
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
         target_name = "ruby-ext-#{extname}"
 
