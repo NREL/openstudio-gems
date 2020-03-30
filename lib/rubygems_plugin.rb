@@ -100,9 +100,9 @@ class StaticExtensionPlugin
                 unless $?.success? then
                   results << "To see why this extension failed to compile, please check" \
                     " the mkmf.log which can be found here:\n"
-                  results << "  " + File.join(dest_path, 'mkmf.log') + "\n"
+                  results << "  " + File.join(tmp_dest, 'mkmf.log') + "\n"
                 end
-                FileUtils.mv 'mkmf.log', dest_path
+                FileUtils.mv 'mkmf.log', tmp_dest
               end
               siteconf.unlink
             end
