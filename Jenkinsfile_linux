@@ -1,5 +1,5 @@
 //Jenkins pipelines are stored in shared libaries. https://github.com/NREL/cbci_jenkins_libs
 
-@Library('cbci_shared_libs@openstudio_gems_conan') _
+@Library('cbci_shared_libs') _
 
 openstudio_gems_linux()
