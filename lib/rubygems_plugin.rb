@@ -72,7 +72,7 @@ class StaticExtensionPlugin
         # because when this is set, the file doesn't exist yet.
         if extname.to_s == "jaro_winkler"
           extname = "jaro_winkler_ext"
-        elsif extname.to_s == "sqlite3-ruby"
+        elsif extname.to_s == "sqlite3"
           extname = "sqlite3_native"
         end
 
