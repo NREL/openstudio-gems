@@ -65,11 +65,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   if bundle_version.nil?
     raise "Cannot determine bundle version"
   end
-  # This doesn't support pessimistic versions, eg `~> 2.1` will install 2.1.0
-  # exactly, whereas `gem install bundler --version '~> 2.1'` works fine
-  # Keeping this with a new name to pass to the system calls to
-  # `"#{bundle_exe} _#{bundle_version}_ `
-  bundle_version_min = bundle_version.gsub(/['=~> ]/, '')
+  bundle_version = bundle_version.gsub(/['=~> ]/, '')
 
   puts "Installing bundler #{bundle_version}"
   system_call("gem install bundler --version #{bundle_version}")
@@ -87,16 +83,15 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     FileUtils.rm('Gemfile.lock')
   end
 
-  # TODO: what's the `bundle _2.1._ install` done for?
-  system_call("#{bundle_exe} _#{bundle_version_min}_ install --without=test --path='#{install_dir}'")
+  system_call("#{bundle_exe} _#{bundle_version}_ install --without=test --path='#{install_dir}'")
 
-  system_call("#{bundle_exe} _#{bundle_version_min}_ lock --add_platform ruby")
+  system_call("#{bundle_exe} _#{bundle_version}_ lock --add_platform ruby")
 
   # DLM: don't remove system platforms, that creates problems when running bundle on the command line
   # these will be removed later
   platforms_to_remove = ['mri', 'mingw', 'x64_mingw', 'x64-mingw32', 'rbx', 'jruby', 'mswin', 'mswin64']
   #platforms_to_remove.each do |platform|
-  #  system_call("#{bundle_exe} _#{bundle_version_min}_ lock --remove_platform #{platform}")
+  #  system_call("#{bundle_exe} _#{bundle_version}_ lock --remove_platform #{platform}")
   #end
 
   FileUtils.rm_rf("#{install_dir}/ruby/#{ruby_gem_dir}/cache")
