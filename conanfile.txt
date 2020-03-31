@@ -2,6 +2,12 @@
 # the virtualbuildenv sh/bat script to get the include paths worked out
 [build_requires]
 sqlite3/3.31.1   # For sqlite3-ruby
+# nokogiri
+zlib/1.2.11
+libxml2/2.9.9
+libxslt/1.1.33@bincrafters/stable
 
 [generators]
 virtualbuildenv
+virtualrunenv
+virtualenv
