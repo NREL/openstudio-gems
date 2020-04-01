@@ -29,4 +29,8 @@ gem 'openstudio-standards', '= 0.2.11.rc1'
 gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
 gem 'jaro_winkler', '= 1.5.4', :github => 'jmarrec/jaro_winkler', :ref => 'f1ca425fdef06603e5c65b09c5b681f805e1e297'
 gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
-gem 'nokogiri', '= 1.11.0.rc1.20200331222433', :github => 'jmarrec/nokogiri', :ref => 'MSVC_support' # master of 2020-03-31 + gemspec commitd
+# gem 'nokogiri', '= 1.11.0.rc1.20200331222433', :github => 'jmarrec/nokogiri', :ref => 'MSVC_support' # master of 2020-03-31 + gemspec commit
+
+# You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
+# gem 'oga', '3.2'
+gem 'oga', :github => 'YorickPeterse/oga', :tag => 'v3.2'

@@ -74,6 +74,8 @@ class StaticExtensionPlugin
           extname = "jaro_winkler_ext"
         elsif extname.to_s == "sqlite3"
           extname = "sqlite3_native"
+        elsif extname.to_s == "oga"
+          extname = "liboga"
         end
 
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
