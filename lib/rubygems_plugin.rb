@@ -70,7 +70,12 @@ class StaticExtensionPlugin
         # Work-around for native gems with non-standard library names
         # Glob `#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}` won't work
         # because when this is set, the file doesn't exist yet.
-        if extname.to_s == "jaro_winkler"
+
+	if extension_dir.to_s.include? "oga"
+	  extname = "liboga" 
+	elsif extension_dir.to_s.include? "ruby-ll"
+	  extname = "libll" 
+	elsif extname.to_s == "jaro_winkler"
           extname = "jaro_winkler_ext"
         elsif extname.to_s == "sqlite3"
           extname = "sqlite3_native"
@@ -80,6 +85,7 @@ class StaticExtensionPlugin
 
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
         target_name = "ruby-ext-#{extname}"
+
 
         tmp_dest = Dir.mktmpdir(".gem.", ".")
 
