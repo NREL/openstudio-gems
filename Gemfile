@@ -32,5 +32,5 @@ gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
 # gem 'nokogiri', '= 1.11.0.rc1.20200331222433', :github => 'jmarrec/nokogiri', :ref => 'MSVC_support' # master of 2020-03-31 + gemspec commit
 
 # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
-# gem 'oga', '3.2'
-gem 'oga', :github => 'YorickPeterse/oga', :tag => 'v3.2'
+gem 'oga', '3.2'
+# gem 'oga', :github => 'YorickPeterse/oga', :tag => 'v3.2'
