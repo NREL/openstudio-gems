@@ -132,8 +132,6 @@ class StaticExtensionPlugin
           f.puts "namespace embedded_help {"
           f.puts "  inline void init_#{extname}() {"
           f.puts "    Init_#{extname}();"
-          f.puts "    rb_provide(\"#{extname}\");"
-          f.puts "    rb_provide(\"#{extname}.so\");"
           f.puts "  }"
           f.puts "}"
           f.puts
