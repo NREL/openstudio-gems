@@ -1,13 +1,14 @@
+# currently disabled https://travis-ci.org/NREL/openstudio-gems/settings
+# Jenkins CI replaces travis job
 ---
 sudo: false
 language: ruby
 #cache: bundler
 rvm:
-  - 2.2.4
-before_install: 
-  - gem install bundler -v '1.17.1'
-  - gem install bundler -v '~> 1.17.1'
-install: 
+  - 2.5.5
+before_install:
+  - gem install bundler -v '~> 2.1'
+install:
   - bundle install
 script:
   - bundle exec rake make_package

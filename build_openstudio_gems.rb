@@ -12,13 +12,13 @@ def system_call(cmd)
   new_env['RUBYLIB'] = nil
   new_env['RUBYOPT'] = nil
   new_env['BUNDLE_PATH'] = nil
-  
+
   puts cmd
   system(new_env, cmd)
 end
 
 def make_package(install_dir, tar_exe, expected_ruby_version)
-  
+
   #ENV.each_pair do |k,v|
   #  puts "'#{k}' = '#{v}'"
   #end
@@ -37,6 +37,18 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   if /win/.match(RUBY_PLATFORM) || /mingw/.match(RUBY_PLATFORM)
     ENV['PATH'] = "#{ENV['PATH']};C:\\Program Files\\Git\\cmd"
   end
+
+  if /mswin/.match(RUBY_PLATFORM)
+    platform_prefix = "windows"
+  elsif /darwin/.match(RUBY_PLATFORM)
+    platform_prefix = "darwin"
+  elsif /linux/.match(RUBY_PLATFORM)
+    platform_prefix = "linux"
+  else
+    puts RUBY_PLATFORM  + " is an unsupported platform"
+    platform_prefix = ""
+  end
+
 
   if File.exists?(install_dir)
     FileUtils.rm_rf(install_dir)
@@ -128,7 +140,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   FileUtils.cp('openstudio-gems.gemspec', "#{install_dir}/.")
   FileUtils.cp('Gemfile', "#{install_dir}/.")
   FileUtils.cp('Gemfile.lock', "#{install_dir}/.")
-  
+
   # remove platforms here
   gemfile_lock = ''
   File.open("#{install_dir}/Gemfile.lock", 'r') do |file|
@@ -150,20 +162,20 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
       file.fsync
     rescue
       file.flush
-    end    
+    end
   end
 
   Dir.chdir("#{install_dir}/..")
 
-  new_file_name = "openstudio-gems-#{DateTime.now.strftime("%Y%m%d")}.tar.gz"
-  
+  new_file_name = "openstudio3-gems-#{DateTime.now.strftime("%Y%m%d")}-#{platform_prefix}.tar.gz"
+
   FileUtils.rm_f(new_file_name) if File.exists?(new_file_name)
-  
+
   system_call("\"#{tar_exe}\" -zcvf \"#{new_file_name}\" \"openstudio-gems\"")
 
   puts
   puts "You need to manually upload #{new_file_name} to S3:openstudio-resources/dependencies/"
   puts "Also, you will need to update openstudiocore/CMakeLists.txt with the new file name and the md5 hash (call `md5 #{new_file_name}` or `md5sum #{new_file_name}` to get hash)"
   puts
-  
+
 end

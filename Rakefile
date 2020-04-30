@@ -33,7 +33,7 @@ require_relative 'build_openstudio_gems.rb'
 desc 'Create openstudio-gems package for OpenStudio CLI'
 task :make_package do
   # DLM: currently this is running in the root dir, might want to copy Gemfile somewhere else to run
-  make_package('./openstudio-gems', 'tar', '2.2.4')
+  make_package('./openstudio-gems', 'tar', '2.5.5')
 end
 
 task :default => :make_package
