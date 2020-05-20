@@ -22,7 +22,7 @@ gem 'openstudio-standards', '= 0.2.11'
 # openstudio_measure_tester is redundant as it is included as a core dependency in openstudio-extension.
 
 group :native_ext do
-yy  gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
+  gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
   gem 'jaro_winkler', '= 1.5.4', :github => 'jmarrec/jaro_winkler', :ref => 'f1ca425fdef06603e5c65b09c5b681f805e1e297'
   gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
   # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
