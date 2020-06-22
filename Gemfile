@@ -29,7 +29,8 @@ group :native_ext do
   gem 'oga', '3.2'
 end
 
-gem 'urbanopt-cli', :github => 'urbanopt/urbanopt-cli', :ref => 'openstudio-3.x'
+#gem 'urbanopt-cli', :github => 'tijcolem/urbanopt-cli', :ref => 'cli_args_test_3.x' # master of 2020-03-31 + gemspec commit
+gem 'urbanopt-cli', '= 0.3.1'
 
 # gem 'nokogiri', '= 1.11.0.rc1.20200331222433', :github => 'jmarrec/nokogiri', :ref => 'MSVC_support' # master of 2020-03-31 + gemspec commit
 
