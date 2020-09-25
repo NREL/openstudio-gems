@@ -13,7 +13,7 @@ gemspec
 
 gem 'openstudio-extension', '= 0.2.5'
 
-gem 'openstudio-workflow', '= 2.0.1'
+gem 'openstudio-workflow', '= 2.1.0'
 
 #gem 'openstudio-standards', '= 0.2.12.rc2'
 gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'v0_2_12_rc3'
