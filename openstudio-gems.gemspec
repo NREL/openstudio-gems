@@ -2,7 +2,7 @@ $static = true
 
 Gem::Specification.new do |spec|
   spec.name          = 'openstudio-gems'
-  spec.version       = '3.0.0'
+  spec.version       = '3.1.0'
   spec.authors       = ['Nicholas Long', 'Dan Macumber', 'Katherine Fleming']
   spec.email         = ['nicholas.long@nrel.gov', 'daniel.macumber@nrel.gov', 'katherine.fleming@nrel.gov']
 
@@ -18,14 +18,13 @@ Gem::Specification.new do |spec|
   # gem version is specified in gemspec, gem source/location (e.g. github branch) can be specified in Gemfile
   # runtime dependency versions can be loosened while in development on branches if needed
   # runtime dependency versions should be specified as exact versions when merged to master or develop
-  spec.add_dependency 'openstudio-extension', '0.2.1'
-  spec.add_dependency 'openstudio-workflow', '2.0.0'
-  spec.add_dependency 'openstudio_measure_tester', '0.2.2'
+  spec.add_dependency 'openstudio-extension', '0.3.1'
+  spec.add_dependency 'openstudio-workflow', '2.1.0'
+  spec.add_dependency 'openstudio_measure_tester', '~> 0.2.3'
 
   spec.add_dependency 'parallel', '1.19.1'
-  #spec.add_dependency 'pycall', '1.3.0.dev'
 
-  # 20200324 TJC removed json_pure as json native is enabled for all platforms
+  # 20200324 TJC json native is enabled for all platforms and is included when building ruby
   #spec.add_dependency 'json_pure', '2.2'
 
   # development dependencies need not be specified so strictly
