@@ -38,18 +38,6 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     ENV['PATH'] = "#{ENV['PATH']};C:\\Program Files\\Git\\cmd"
   end
 
-  if /mswin/.match(RUBY_PLATFORM)
-    platform_prefix = "windows"
-  elsif /darwin/.match(RUBY_PLATFORM)
-    platform_prefix = "darwin"
-  elsif /linux/.match(RUBY_PLATFORM)
-    platform_prefix = "linux"
-  else
-    puts RUBY_PLATFORM  + " is an unsupported platform"
-    platform_prefix = ""
-  end
-
-
   if File.exists?(install_dir)
     FileUtils.rm_rf(install_dir)
   end
@@ -167,7 +155,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
 
   Dir.chdir("#{install_dir}/..")
 
-  new_file_name = "openstudio3-gems-#{DateTime.now.strftime("%Y%m%d")}-#{platform_prefix}.tar.gz"
+  new_file_name = "openstudio3-gems-minimal-#{DateTime.now.strftime("%Y%m%d")}.tar.gz"
 
   FileUtils.rm_f(new_file_name) if File.exists?(new_file_name)
 
