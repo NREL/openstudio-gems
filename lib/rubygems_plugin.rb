@@ -109,11 +109,11 @@ class StaticExtensionPlugin
               Gem::Ext::Builder.run cmd, results
             ensure
               if File.exist? 'mkmf.log'
-                unless $?.success? then
-                  results << "To see why this extension failed to compile, please check" \
+                #unless $?.success? then
+                results << "To see why this extension failed to compile, please check" \
                     " the mkmf.log which can be found here:\n"
-                  results << "  " + File.join(tmp_dest, 'mkmf.log') + "\n"
-                end
+                results << "  " + File.join(tmp_dest, 'mkmf.log') + "\n"
+                #end
                 FileUtils.mv 'mkmf.log', tmp_dest
               end
               siteconf.unlink

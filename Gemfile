@@ -11,8 +11,14 @@ gemspec
 # Specify specific gem source/location (e.g. github branch) for running bundle in this directory
 # This is needed if the version of the gem you want to use is not on rubygems
 
-gem 'openstudio-extension', '= 0.3.3'
-gem 'openstudio-workflow', '= 2.1.2'
+gem 'openstudio-extension', '= 0.3.3', :github => 'NREL/OpenStudio-extension-gem', :ref => '31e7e105a9a78a53f5468750a5aa78e7c3c79d58'
+#gem 'openstudio-extension', '= 0.3.3'
+
+gem 'openstudio-workflow', '= 2.1.2', :github => 'NREL/OpenStudio-workflow-gem', :ref => '196dc2030c6646f1c0e5ef3427471df81ca155b6'
+
+gem 'openstudio-workflow', '= 2.1.2', :github => 'NREL/OpenStudio-workflow-gem', :ref => '196dc2030c6646f1c0e5ef3427471df81ca155b6'
+
+gem 'openstudio_measure_tester', '= 0.2.4', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '1f0d84c88a085ffef7d37c96d318860a5d9f5fd6'
 
 gem 'openstudio-standards', '= 0.2.12'
 #gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'master'
