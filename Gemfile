@@ -11,15 +11,15 @@ gemspec
 # Specify specific gem source/location (e.g. github branch) for running bundle in this directory
 # This is needed if the version of the gem you want to use is not on rubygems
 
-gem 'openstudio-extension', '= 0.4.0', :github => 'NREL/OpenStudio-extension-gem', :ref => 'f8038ad96b31c1f5d3d93ba73d9c09722c07d427'
-#gem 'openstudio-extension', '= 0.3.3'
+gem 'openstudio-extension', '= 0.4.0', :github => 'NREL/OpenStudio-extension-gem', :ref => '34d623f3be1bb8211d7cd273b253e4382afdfd76'
+
+gem 'bcl', '= 0.7.0', :github => 'NREL/bcl-gem', :ref => '60e9cfda7fa2b588213fefac10b8b58524a723a3'
 
 gem 'openstudio-workflow', '= 2.2.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => '178905d24c3070d0430f3c9b362809dd0b5c6821'
 
 gem 'openstudio_measure_tester', '= 0.3.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => 'cdb4c60d8839c7e45ea934cd89e9998ec769a0cf'
 
-gem 'openstudio-standards', '= 0.2.12'
-#gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'master'
+#gem 'openstudio-standards', '= 0.2.12'
 
 group :native_ext do
   gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'

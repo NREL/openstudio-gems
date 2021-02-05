@@ -83,7 +83,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     FileUtils.rm('Gemfile.lock')
   end
 
-  system_call("#{bundle_exe} _#{bundle_version}_ install --without=test --path='#{install_dir}'")
+  system_call("#{bundle_exe} _#{bundle_version}_ install --jobs=1 --without=test --path='#{install_dir}'")
 
   system_call("#{bundle_exe} _#{bundle_version}_ lock --add_platform ruby")
 
