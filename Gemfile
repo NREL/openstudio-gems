@@ -19,7 +19,7 @@ gem 'openstudio-workflow', '= 2.2.0', :github => 'NREL/OpenStudio-workflow-gem',
 
 gem 'openstudio_measure_tester', '= 0.3.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '0627076d102e7afbdbf881a8b013c94b5cd42c8c'
 
-#gem 'openstudio-standards', '= 0.2.12'
+gem 'openstudio-standards', '= 0.2.12'
 
 group :native_ext do
   gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
