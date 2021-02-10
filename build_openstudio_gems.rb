@@ -54,14 +54,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     FileUtils.rm_rf(install_dir)
   end
 
-  bundle_version = nil
-  File.open('openstudio-gems.gemspec', 'r') do |f|
-    while line = f.gets
-      if md = /add_development_dependency 'bundler',(.*)/.match(line)
-        bundle_version = md[1].strip
-      end
-    end
-  end
+  bundle_version = "2.1.4"
   if bundle_version.nil?
     raise "Cannot determine bundle version"
   end
