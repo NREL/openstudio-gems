@@ -54,18 +54,8 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     FileUtils.rm_rf(install_dir)
   end
 
-  bundle_version = nil
-  File.open('openstudio-gems.gemspec', 'r') do |f|
-    while line = f.gets
-      if md = /add_development_dependency 'bundler',(.*)/.match(line)
-        bundle_version = md[1].strip
-      end
-    end
-  end
-  if bundle_version.nil?
-    raise "Cannot determine bundle version"
-  end
-  bundle_version = bundle_version.gsub(/['=~> ]/, '')
+  # Set bundler version here as parsing from gemspec gets wrong version e.g. 'bundler', '>= 2.1.0'
+  bundle_version = "2.1.4"
 
   puts "Installing bundler #{bundle_version}"
   system_call("gem install bundler --version #{bundle_version}")
