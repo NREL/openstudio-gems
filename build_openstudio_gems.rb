@@ -54,18 +54,8 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     FileUtils.rm_rf(install_dir)
   end
 
-  bundle_version = nil
-  File.open('openstudio-gems.gemspec', 'r') do |f|
-    while line = f.gets
-      if md = /add_development_dependency 'bundler',(.*)/.match(line)
-        bundle_version = md[1].strip
-      end
-    end
-  end
-  if bundle_version.nil?
-    raise "Cannot determine bundle version"
-  end
-  bundle_version = bundle_version.gsub(/['=~> ]/, '')
+  # Set bundler version here as parsing from gemspec gets wrong version e.g. 'bundler', '>= 2.1.0'
+  bundle_version = "2.1.4"
 
   puts "Installing bundler #{bundle_version}"
   system_call("gem install bundler --version #{bundle_version}")
@@ -83,9 +73,9 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     FileUtils.rm('Gemfile.lock')
   end
 
-  system_call("#{bundle_exe} _#{bundle_version}_ install --without=test --path='#{install_dir}'")
+  system_call("ruby #{bundle_exe} _#{bundle_version}_ install --without=test --path='#{install_dir}'")
 
-  system_call("#{bundle_exe} _#{bundle_version}_ lock --add_platform ruby")
+  system_call("ruby #{bundle_exe} _#{bundle_version}_ lock --add_platform ruby")
 
   # DLM: don't remove system platforms, that creates problems when running bundle on the command line
   # these will be removed later

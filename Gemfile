@@ -3,7 +3,7 @@
 # gems listed here must be able to read resource files from the embedded files location
 # need to adjust hard coded paths in embedded_help.rb when adding new gems
 source 'http://rubygems.org'
-ruby "~> 2.5.0"
+ruby "~> 2.7.0"
 
 # Specify gem's dependencies in openstudio-gems.gemspec, this is what consumers of the gem will read
 gemspec
@@ -11,8 +11,8 @@ gemspec
 # Specify specific gem source/location (e.g. github branch) for running bundle in this directory
 # This is needed if the version of the gem you want to use is not on rubygems
 
-gem 'openstudio-extension', '= 0.3.2'
-gem 'openstudio-workflow', '= 2.1.1'
+gem 'openstudio-extension', '= 0.4.0'
+gem 'openstudio-workflow', '= 2.2.0'
 
 gem 'openstudio-standards', '= 0.2.12'
 #gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'master'
@@ -27,4 +27,3 @@ end
 
 # leave this line in for now as we may try to get nokogiri to compile correctly on windows
 # gem 'nokogiri', '= 1.11.0.rc1.20200331222433', :github => 'jmarrec/nokogiri', :ref => 'MSVC_support' # master of 2020-03-31 + gemspec commit
-
