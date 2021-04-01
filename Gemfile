@@ -15,7 +15,7 @@ gem 'openstudio-extension', '= 0.4.0'
 gem 'openstudio-workflow', '= 2.2.0'
 
 #gem 'openstudio-standards', '= 0.2.12'
-gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'v0_2_13_rc2'
+gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'v_0_2_13_rc2'
 
 group :native_ext do
   gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
