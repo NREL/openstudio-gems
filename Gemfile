@@ -17,6 +17,10 @@ gem 'openstudio-workflow', '= 2.2.0'
 gem 'openstudio-standards', '= 0.2.13'
 #gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'v_0_2_13_rc2'
 
+
+gem 'openstudio_measure_tester', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => 'update_rubocop'
+
+
 group :native_ext do
   gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
   gem 'jaro_winkler', '= 1.5.4', :github => 'jmarrec/jaro_winkler', :ref => 'f1ca425fdef06603e5c65b09c5b681f805e1e297'
