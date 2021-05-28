@@ -14,11 +14,8 @@ gemspec
 gem 'openstudio-extension', '= 0.4.2'
 gem 'openstudio-workflow', '= 2.2.0'
 
-gem 'openstudio-standards', '= 0.2.13'
+gem 'openstudio-standards', '= 0.2.14'
 #gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'v_0_2_13_rc2'
-
-
-gem 'openstudio_measure_tester', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => 'update_rubocop'
 
 
 group :native_ext do
