@@ -12,7 +12,9 @@ gemspec
 # This is needed if the version of the gem you want to use is not on rubygems
 
 gem 'openstudio-extension', '= 0.4.4'
-gem 'openstudio-workflow', '= 2.2.1'
+#gem 'openstudio-workflow', '= 2.2.1'
+# Test out forward translate options in workflow gem
+gem 'openstudio-workflow', :github => 'NREL/OpenStudio-workflow-gem', :ref => 'ft_cli_options'
 
 gem 'openstudio-standards', '= 0.2.14'
 #gem 'openstudio-standards', :github => 'NREL/openstudio-standards', :ref => 'v_0_2_13_rc2'
