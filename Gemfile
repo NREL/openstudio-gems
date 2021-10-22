@@ -12,7 +12,8 @@ gemspec
 # This is needed if the version of the gem you want to use is not on rubygems
 
 gem 'openstudio-extension', '= 0.5.0'
-gem 'openstudio-workflow', '= 2.3.0'
+#gem 'openstudio-workflow', '= 2.3.0'
+gem 'openstudio-workflow', :github => 'NREL/openstudio-workflow', :ref => 'v2.3.1-alpha'
 
 gem 'openstudio-standards', '= 0.2.15.pre.rc1'
 
