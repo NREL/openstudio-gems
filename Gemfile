@@ -14,7 +14,7 @@ gemspec
 #gem 'openstudio-extension', '= 0.5.1'
 gem 'openstudio-extension', :github => 'NREL/openstudio-extension-gem', :ref => 'v0.5.1-rc1'
 #gem 'openstudio-workflow', '= 2.3.1'
-gem 'openstudio-workflow', :github => 'NREL/OpenStudio-workflow-gem', :ref => 'v2.3.1-alpha'
+gem 'openstudio-workflow', :github => 'NREL/OpenStudio-workflow-gem', :ref => 'develop'
 
 gem 'openstudio-standards', '= 0.2.15.pre.rc2'
 
