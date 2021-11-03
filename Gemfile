@@ -11,12 +11,10 @@ gemspec
 # Specify specific gem source/location (e.g. github branch) for running bundle in this directory
 # This is needed if the version of the gem you want to use is not on rubygems
 
-#gem 'openstudio-extension', '= 0.5.1'
-gem 'openstudio-extension', :github => 'NREL/openstudio-extension-gem', :ref => 'v0.5.1-rc1'
-#gem 'openstudio-workflow', '= 2.3.1'
-gem 'openstudio-workflow', :github => 'NREL/OpenStudio-workflow-gem', :ref => 'develop'
+gem 'openstudio-extension', '= 0.5.1'
+gem 'openstudio-workflow', '= 2.3.1'
 
-gem 'openstudio-standards', '= 0.2.15.pre.rc2'
+gem 'openstudio-standards', '= 0.2.15'
 
 group :native_ext do
   gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
