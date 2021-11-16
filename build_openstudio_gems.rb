@@ -155,9 +155,12 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     end
   end
 
-  Dir.chdir("#{install_dir}/..")
-
   new_file_name = "openstudio3-gems-#{DateTime.now.strftime("%Y%m%d")}-#{platform_prefix}.tar.gz"
+  File.open("#{install_dir}/version.txt", 'w') do |f|
+    f.puts new_file_name
+  end
+
+  Dir.chdir("#{install_dir}/..")
 
   FileUtils.rm_f(new_file_name) if File.exists?(new_file_name)
 
