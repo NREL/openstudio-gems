@@ -23,6 +23,7 @@ group :native_ext do
   # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
   gem 'oga', '3.2'
   gem 'cbor', '0.5.9.6'
+  gem 'msgpack', '1.4.2'
 end
 
 # leave this line in for now as we may try to get nokogiri to compile correctly on windows
