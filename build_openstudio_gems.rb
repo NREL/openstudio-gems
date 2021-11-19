@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'time'
 require 'rbconfig'
+require 'open3'
 
 def system_call(cmd)
   new_env = {}
@@ -155,9 +156,12 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     end
   end
 
-  Dir.chdir("#{install_dir}/..")
-
   new_file_name = "openstudio3-gems-#{DateTime.now.strftime("%Y%m%d")}-#{platform_prefix}.tar.gz"
+  File.open("#{install_dir}/version.txt", 'w') do |f|
+    f.puts new_file_name
+  end
+
+  Dir.chdir("#{install_dir}/..")
 
   FileUtils.rm_f(new_file_name) if File.exists?(new_file_name)
 
@@ -165,7 +169,25 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
 
   puts
   puts "You need to manually upload #{new_file_name} to S3:openstudio-resources/dependencies/"
-  puts "Also, you will need to update openstudiocore/CMakeLists.txt with the new file name and the md5 hash (call `md5 #{new_file_name}` or `md5sum #{new_file_name}` to get hash)"
+  puts "Also, you will need to update OpenStudio/CMakeLists.txt with the new file name and the md5 hash (call `md5 #{new_file_name}` or `md5sum #{new_file_name}` to get hash)"
   puts
+  cmd = nil
+  if platform_prefix == 'Windows'
+    cmd = "certutil -hashfile \"#{new_file_name}\" MD5"
+  else
+    cmd = "md5sum \"#{new_file_name}\""
+  end
 
+  Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+    stdout = stdout.gets(nil)
+    stderr = stderr.gets(nil)
+    result = wait_thr.value.exitstatus
+    if result == 0
+      puts "#{stdout}"
+    else
+      puts "Something went wrong, exitcode=#{result}"
+      puts "stdout=#{stdout}"
+      puts "stderr=#{stderr}"
+    end
+  end
 end
