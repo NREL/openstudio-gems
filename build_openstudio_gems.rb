@@ -42,7 +42,11 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   if /mswin/.match(RUBY_PLATFORM)
     platform_prefix = "windows"
   elsif /darwin/.match(RUBY_PLATFORM)
-    platform_prefix = "darwin"
+    if /arm64/.match(RUBY_PLATFORM)
+      platform_prefix = "darwin_arm64"
+    else
+      platform_prefix = "darwin"
+    end
   elsif /linux/.match(RUBY_PLATFORM)
     platform_prefix = "linux"
   else
