@@ -2,6 +2,6 @@
 # the virtualbuildenv sh/bat script to get the include paths worked out
 [build_requires]
 sqlite3/3.31.1   # For sqlite3-ruby
-
+libffi/3.3       # for ffi
 [generators]
 virtualbuildenv
