@@ -15,7 +15,7 @@ gem 'openstudio-extension', '= 0.6.0'
 gem 'openstudio-workflow', '= 2.3.1'
 
 
-gem 'openstudio-standards', '= 0.2.17'
+gem 'openstudio-standards', '= 0.3.0'
 
 gem 'tbd', :github => 'rd2/tbd', :ref => 'v3.0.3'
 
