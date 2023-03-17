@@ -10,15 +10,10 @@ gemspec
 
 # Specify specific gem source/location (e.g. github branch) for running bundle in this directory
 # This is needed if the version of the gem you want to use is not on rubygems
-
 gem 'openstudio-extension', '= 0.6.0'
 gem 'openstudio-workflow', '= 2.3.1'
-
-
-gem 'openstudio-standards', '= 0.3.0'
-
-gem 'tbd', :github => 'rd2/tbd', :ref => 'v3.0.3'
-
+gem 'openstudio-standards', '= 0.3.1.rc1'
+gem 'tbd', :github => 'rd2/tbd', :ref => 'v3.2.0'
 gem 'openstudio_measure_tester', '= 0.3.2'
 
 group :native_ext do
