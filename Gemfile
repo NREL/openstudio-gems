@@ -12,7 +12,7 @@ gemspec
 # This is needed if the version of the gem you want to use is not on rubygems
 gem 'openstudio-extension', '= 0.6.0'
 gem 'openstudio-workflow', '= 2.3.1'
-gem 'openstudio-standards', '= 0.3.1.rc2'
+gem 'openstudio-standards', '= 0.4.0'
 gem 'tbd', :github => 'rd2/tbd', :ref => 'v3.2.2'
 gem 'openstudio_measure_tester', '= 0.3.2'
 
