@@ -48,7 +48,11 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
       platform_prefix = "darwin"
     end
   elsif /linux/.match(RUBY_PLATFORM)
-    platform_prefix = "linux"
+    if /aarch64/.match(RUBY_PLATFORM)
+      platform_prefix = "linux_arm64"
+    else
+      platform_prefix = "linux"
+    end
   else
     puts RUBY_PLATFORM  + " is an unsupported platform"
     platform_prefix = ""
@@ -160,7 +164,12 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     end
   end
 
-  new_file_name = "openstudio3-gems-#{DateTime.now.strftime("%Y%m%d")}-#{platform_prefix}.tar.gz"
+  if ENV['DATE'].nil?
+    date = DateTime.now.strftime("%Y%m%d")
+  else
+    date = ENV['DATE']
+  end
+  new_file_name = "openstudio3-gems-#{date}-#{platform_prefix}.tar.gz"
   File.open("#{install_dir}/version.txt", 'w') do |f|
     f.puts new_file_name
   end
