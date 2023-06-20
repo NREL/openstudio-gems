@@ -22,6 +22,13 @@ Or install it yourself as:
 
 To build openstudio-gems package for OpenStudio CLI call `rake make_package`.
 
+Note: If you need to override the date that's part of the filename (defaults to today), set the env variable `DATE`
+
+```shell
+DATE=20230427 rake make_package
+```
+
+
 # Releasing
 
 * Update change log
