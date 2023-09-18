@@ -19,6 +19,7 @@ gem 'openstudio-workflow', '= 2.3.1'
 gem 'openstudio-standards', '= 0.4.0'
 gem 'tbd', :github => 'rd2/tbd', :ref => 'v3.2.2'
 gem 'openstudio_measure_tester', '= 0.3.2'
+gem 'json_schemer', '= 2.0.0'
 
 group :native_ext do
   gem 'pycall', '= 1.2.1', :github => 'NREL/pycall.rb', :ref => '5d60b274ac646cdb422a436aad98b40ef8b902b8'
