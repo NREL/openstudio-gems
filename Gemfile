@@ -14,10 +14,10 @@ gemspec
 # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
 gem 'addressable', '= 2.8.1'
 
-gem 'openstudio-extension', '= 0.7.0'
+gem 'openstudio-extension', '= 0.7.1'
 gem 'openstudio-workflow', '= 2.3.1'
-gem 'openstudio-standards', '= 0.5.0.rc1'
-gem 'tbd', :github => 'rd2/tbd', :ref => 'v3.2.3'
+gem 'openstudio-standards', '= 0.5.0'
+gem 'tbd', :github => 'rd2/tbd', :ref => 'v3.2.2'
 gem 'openstudio_measure_tester', '= 0.3.2'
 gem 'json_schemer', '= 2.0.0'
 
