@@ -20,7 +20,18 @@ Or install it yourself as:
 
 ## Usage
 
-To build openstudio-gems package for OpenStudio CLI call `rake make_package`.
+To build openstudio-gems package for OpenStudio CLI call `rake make_package`, but before make sure you are:
+
+1. Using the right ruby version
+2. You have the conan dependencies in your PATH
+
+Using conan v2
+```
+conan install . --output-folder=../.deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20
+. ./deps/conanbuild.sh
+ruby --version
+sqlite --version
+```
 
 Note: If you need to override the date that's part of the filename (defaults to today), set the env variable `DATE`
 

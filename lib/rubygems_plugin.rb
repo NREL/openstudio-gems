@@ -1,3 +1,5 @@
+require 'tmpdir'
+require 'tempfile'
 
 class StaticExtensionPlugin
 
