@@ -17,7 +17,7 @@ gem 'addressable', '= 2.8.1'
 gem 'openstudio-standards', '= 0.5.0'
 gem 'json_schemer', '= 2.0.0'
 
-LOCAL_DEV = false
+LOCAL_DEV = true
 if LOCAL_DEV
   gem 'tbd', path: '../tbd'
   gem 'osut', path: '../osut'
