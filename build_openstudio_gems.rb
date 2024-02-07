@@ -169,7 +169,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   else
     date = ENV['DATE']
   end
-  new_file_name = "openstudio3-gems-#{date}-#{platform_prefix}.tar.gz"
+  new_file_name = "openstudio3-gems-#{date}-#{platform_prefix}-#{expected_ruby_version}.tar.gz"
   File.open("#{install_dir}/version.txt", 'w') do |f|
     f.puts new_file_name
   end

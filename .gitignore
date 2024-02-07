@@ -20,4 +20,4 @@
 
 # Ignore IDE files
 /.idea
-.deps
+.conandeps
