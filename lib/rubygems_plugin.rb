@@ -8,6 +8,7 @@ class StaticExtensionPlugin
 
     @dir =  __dir__
     @install_dir = File.expand_path(@dir + "/../openstudio-gems")
+    puts "@dir=#{@dir}"
     @exports_file_name = @dir + "/../openstudio-gems/export-extensions.cmake"
     @ext_init_file_name = @dir + "/../openstudio-gems/ext-init.hpp"
 
@@ -85,6 +86,9 @@ class StaticExtensionPlugin
           extname = "liboga"
         end
 
+        puts "extension=#{extension}"
+        puts "installer.spec.full_gem_path=#{installer.spec.full_gem_path}"
+        puts "extension_dir=#{extension_dir}, @install_dir=#{@install_dir}"
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
         target_name = "ruby-ext-#{extname}"
 

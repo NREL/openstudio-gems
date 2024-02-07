@@ -3,7 +3,7 @@
 # gems listed here must be able to read resource files from the embedded files location
 # need to adjust hard coded paths in embedded_help.rb when adding new gems
 source 'http://rubygems.org'
-ruby "~> 3.2.2"
+# ruby "~> 3.2.2"
 
 # Specify gem's dependencies in openstudio-gems.gemspec, this is what consumers of the gem will read
 gemspec
@@ -17,7 +17,7 @@ gem 'addressable', '= 2.8.1'
 gem 'openstudio-standards', '= 0.5.0'
 gem 'json_schemer', '= 2.0.0'
 
-LOCAL_DEV = true
+LOCAL_DEV = false
 if LOCAL_DEV
   gem 'tbd', path: '../tbd'
   gem 'osut', path: '../osut'
