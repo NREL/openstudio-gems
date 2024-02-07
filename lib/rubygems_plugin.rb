@@ -94,9 +94,9 @@ class StaticExtensionPlugin
 
 
         tmp_dest = Dir.mktmpdir(".gem.", ".")
+        puts "extension_dir=#{extension_dir}"
 
-        Dir.chdir extension_dir do
-          Tempfile.open %w"siteconf .rb", "." do |siteconf|
+          Tempfile.open %w"siteconf .rb", extension_dir do |siteconf|
             puts "siteconf.path=#{siteconf.path}"
 
             siteconf.puts "require 'mkmf'"
@@ -111,14 +111,14 @@ class StaticExtensionPlugin
             siteconf.close
             FileUtils.cp siteconf.path, "siteconf.rb"
 
-            cmd = [Gem.ruby, "-r", StaticExtensionPlugin.get_relative_path(siteconf.path), File.basename(extension)].join ' '
+            cmd = [Gem.ruby, "-r", siteconf.path, File.join(extension_dir, File.basename(extension))]
             puts "cmd=#{cmd}"
             results = []
 
             begin
               Gem::Ext::Builder.run cmd, results
             ensure
-              if File.exist? 'mkmf.log'
+              if File.exist? File.join(extension_dir, 'mkmf.log')
                 unless $?.success? then
                   results << "To see why this extension failed to compile, please check" \
                     " the mkmf.log which can be found here:\n"
@@ -132,7 +132,6 @@ class StaticExtensionPlugin
             StaticExtensionPlugin.make_static extension_dir, results
 
           end
-        end
 
         File.open(@ext_init_file_name, "a") do |f|
           f.puts "extern \"C\" {"
