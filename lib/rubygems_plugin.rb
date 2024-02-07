@@ -1,3 +1,5 @@
+require 'tmpdir'
+require 'tempfile'
 
 class StaticExtensionPlugin
 
@@ -6,6 +8,7 @@ class StaticExtensionPlugin
 
     @dir =  __dir__
     @install_dir = File.expand_path(@dir + "/../openstudio-gems")
+    puts "@dir=#{@dir}"
     @exports_file_name = @dir + "/../openstudio-gems/export-extensions.cmake"
     @ext_init_file_name = @dir + "/../openstudio-gems/ext-init.hpp"
 
@@ -40,7 +43,7 @@ class StaticExtensionPlugin
         make_program,
         destdir,
         target
-      ].join(' ').rstrip
+      ]
       begin
         Gem::Ext::Builder.run(cmd, results, "make #{target}".rstrip)
       rescue Gem::InstallError
@@ -83,6 +86,9 @@ class StaticExtensionPlugin
           extname = "liboga"
         end
 
+        puts "extension=#{extension}"
+        puts "installer.spec.full_gem_path=#{installer.spec.full_gem_path}"
+        puts "extension_dir=#{extension_dir}, @install_dir=#{@install_dir}"
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
         target_name = "ruby-ext-#{extname}"
 
@@ -91,6 +97,8 @@ class StaticExtensionPlugin
 
         Dir.chdir extension_dir do
           Tempfile.open %w"siteconf .rb", "." do |siteconf|
+            puts "siteconf.path=#{siteconf.path}"
+
             siteconf.puts "require 'mkmf'"
             siteconf.puts "$static = true"
             siteconf.puts "require 'rbconfig'"
@@ -101,8 +109,10 @@ class StaticExtensionPlugin
             end
 
             siteconf.close
+            FileUtils.cp siteconf.path, "siteconf.rb"
 
             cmd = [Gem.ruby, "-r", StaticExtensionPlugin.get_relative_path(siteconf.path), File.basename(extension)].join ' '
+            puts "cmd=#{cmd}"
             results = []
 
             begin
