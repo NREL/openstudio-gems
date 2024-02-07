@@ -12,7 +12,7 @@ gemspec
 # This is needed if the version of the gem you want to use is not on rubygems
 
 LOCAL_DEV = false
-MINIMAL_GEMS = true    # Keep only one non-native gem, and one native
+MINIMAL_GEMS = false    # Keep only one non-native gem, and one native
 
 if !MINIMAL_GEMS
   # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
