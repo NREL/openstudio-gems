@@ -27,7 +27,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   ENV['PATH'] = "#{ENV['PATH']}#{File::PATH_SEPARATOR}#{File.dirname(tar_exe)}"
 
   if RUBY_VERSION != expected_ruby_version
-    raise "Incorrect Ruby version ${RUBY_VERSION} used, expecting #{expected_ruby_version}"
+    raise "Incorrect Ruby version #{RUBY_VERSION} used, expecting #{expected_ruby_version}"
   end
 
   ruby_gem_dir = Gem.default_dir.split('/').last
@@ -59,12 +59,12 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   end
 
 
-  if File.exists?(install_dir)
+  if File.exist?(install_dir)
     FileUtils.rm_rf(install_dir)
   end
 
   # Set bundler version here as parsing from gemspec gets wrong version e.g. 'bundler', '>= 2.1.0'
-  bundle_version = "2.1.4"
+  bundle_version = "2.5.5"
 
   puts "Installing bundler #{bundle_version}"
   system_call("gem install bundler --version #{bundle_version}")
@@ -73,11 +73,11 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   ENV['BUNDLE_WITHOUT'] = 'test'
   bundle_exe = File.join("#{install_dir}/ruby/#{ruby_gem_dir}", 'bin', 'bundle')
 
-  if !File.exists?(bundle_exe)
+  if !File.exist?(bundle_exe)
     raise "Required bundle executable not found"
   end
 
-  if File.exists?('Gemfile.lock')
+  if File.exist?('Gemfile.lock')
     puts 'Removing Gemfile.lock'
     FileUtils.rm('Gemfile.lock')
   end
@@ -169,14 +169,14 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
   else
     date = ENV['DATE']
   end
-  new_file_name = "openstudio3-gems-#{date}-#{platform_prefix}.tar.gz"
+  new_file_name = "openstudio3-gems-#{date}-#{platform_prefix}-#{expected_ruby_version}.tar.gz"
   File.open("#{install_dir}/version.txt", 'w') do |f|
     f.puts new_file_name
   end
 
   Dir.chdir("#{install_dir}/..")
 
-  FileUtils.rm_f(new_file_name) if File.exists?(new_file_name)
+  FileUtils.rm_f(new_file_name) if File.exist?(new_file_name)
 
   system_call("\"#{tar_exe}\" -zcvf \"#{new_file_name}\" \"openstudio-gems\"")
 
