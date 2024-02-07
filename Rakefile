@@ -31,9 +31,14 @@ require 'bundler/gem_tasks'
 require_relative 'build_openstudio_gems.rb'
 
 desc 'Create openstudio-gems package for OpenStudio CLI'
-task :make_package do
+
+task :make_package, :ruby_version, :tar_exe do |t, args|
+  args.with_defaults(:ruby_version => '3.2.2', :tar_exe => 'tar')
   # DLM: currently this is running in the root dir, might want to copy Gemfile somewhere else to run
-  make_package('./openstudio-gems', 'tar', '3.2.2')
+  # puts "Args with defaults were: #{args}"
+  puts "Ruby version: #{args[:ruby_version]}"
+  puts "tar_exe: #{args[:tar_exe]}"
+  make_package('./openstudio-gems', args[:tar_exe], args[:ruby_version])
 end
 
 task :default => :make_package
