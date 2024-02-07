@@ -95,7 +95,12 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
 
   FileUtils.rm_rf("#{install_dir}/ruby/#{ruby_gem_dir}/cache")
 
-  FileUtils.rm_rf("./.bundle")
+  # Remove .git, .github, .gitiginore
+  Dir.glob("#{install_dir}/ruby/#{ruby_gem_dir}/**/.git*").each do |f|
+    FileUtils.rm_rf(f)
+  end
+
+  FileUtils.rm_rf("#{install_dir}/ruby/#{ruby_gem_dir}/doc/")
 
   standards_gem_dir = nil
   workflow_gem_dir = nil

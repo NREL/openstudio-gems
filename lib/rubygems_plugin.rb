@@ -24,7 +24,7 @@ class StaticExtensionPlugin
   end
 
   def self.make_static(dest_path, results)
-    unless File.exist? 'Makefile' then
+    unless File.exist? "#{File.join(dest_path, 'Makefile')}" then
       raise Gem::InstallError, 'Makefile not found'
     end
 
@@ -45,7 +45,7 @@ class StaticExtensionPlugin
         target
       ]
       begin
-        Gem::Ext::Builder.run(cmd, results, "make #{target}".rstrip)
+        Gem::Ext::Builder.run(cmd, results, "make #{target}".rstrip, dest_path)
       rescue Gem::InstallError
         raise unless target == 'clean' # ignore clean failure
       end
@@ -92,46 +92,46 @@ class StaticExtensionPlugin
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
         target_name = "ruby-ext-#{extname}"
 
+        # enable Gem.configure.really_verbose
+        # Gem.configuration.verbose = 10
 
         tmp_dest = Dir.mktmpdir(".gem.", ".")
+        puts "tmp_dest=#{tmp_dest}"
         puts "extension_dir=#{extension_dir}"
 
-          Tempfile.open %w"siteconf .rb", extension_dir do |siteconf|
-            puts "siteconf.path=#{siteconf.path}"
-
-            siteconf.puts "require 'mkmf'"
-            siteconf.puts "$static = true"
-            siteconf.puts "require 'rbconfig'"
-            siteconf.puts "dest_path = #{tmp_dest.dump}"
-            %w[sitearchdir sitelibdir].each do |dir|
-              siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
-              siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
-            end
-
-            siteconf.close
-            FileUtils.cp siteconf.path, "siteconf.rb"
-
-            cmd = [Gem.ruby, "-r", siteconf.path, File.join(extension_dir, File.basename(extension))]
-            puts "cmd=#{cmd}"
-            results = []
-
-            begin
-              Gem::Ext::Builder.run cmd, results
-            ensure
-              if File.exist? File.join(extension_dir, 'mkmf.log')
-                unless $?.success? then
-                  results << "To see why this extension failed to compile, please check" \
-                    " the mkmf.log which can be found here:\n"
-                  results << "  " + File.join(tmp_dest, 'mkmf.log') + "\n"
-                end
-                FileUtils.mv 'mkmf.log', tmp_dest
-              end
-              siteconf.unlink
-            end
-
-            StaticExtensionPlugin.make_static extension_dir, results
-
+        siteconf_path = "#{extension_dir}/siteconf.rb"
+        File.open(siteconf_path, "w") do |siteconf|
+        # Tempfile.open %w"siteconf .rb", extension_dir do |siteconf|
+          siteconf.puts "require 'mkmf'"
+          siteconf.puts "$static = true"
+          siteconf.puts "require 'rbconfig'"
+          siteconf.puts "dest_path = #{File.absolute_path(tmp_dest).dump}"
+          %w[sitearchdir sitelibdir].each do |dir|
+            siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
+            siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
           end
+        end
+
+
+        cmd = [Gem.ruby, "-r", "./siteconf.rb", File.basename(extension)]
+        puts "cmd=#{cmd}"
+
+        results = []
+        begin
+          Gem::Ext::Builder.run cmd, results, "Building #{extension}", extension_dir
+        ensure
+          if File.exist? File.join(extension_dir, 'mkmf.log')
+            unless $?.success? then
+              results << "To see why this extension failed to compile, please check" \
+                " the mkmf.log which can be found here:\n"
+              results << "  " + File.join(tmp_dest, 'mkmf.log') + "\n"
+            end
+            FileUtils.mv 'mkmf.log', tmp_dest
+          end
+          File.delete(siteconf_path) if File.exist? siteconf_path
+        end
+
+        StaticExtensionPlugin.make_static extension_dir, results
 
         File.open(@ext_init_file_name, "a") do |f|
           f.puts "extern \"C\" {"
