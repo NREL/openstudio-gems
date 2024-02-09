@@ -20,6 +20,7 @@ class GemsRecipe(ConanFile):
         env = Environment()
         env.define("GEM_HOME", os.path.abspath("gems"))
         env.define("GEM_PATH", os.path.abspath("gems"))
+        env.define("BUNDLE_PATH", "./openstudio-gems")
         env.vars(self, scope="build").save_script("conanbuild_gems")
 
         if is_msvc(self):

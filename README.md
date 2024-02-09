@@ -31,6 +31,8 @@ conan install . --output-folder=.conandeps --build=missing -s:a build_type=Relea
 . ./.conandeps/conanbuild.sh
 ruby --version
 sqlite3 --version
+gem install rake
+rake make_package
 ```
 
 On Windows with Powershell
@@ -39,6 +41,8 @@ On Windows with Powershell
 conan install . --output-folder=.conandeps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' -c tools.env.virtualenv:powershell=True
 . .\.conandeps\conanbuild.ps1
 ruby --version
+gem install rake
+rake make_package
 ```
 
 Note: If you need to override the date that's part of the filename (defaults to today), set the env variable `DATE`
