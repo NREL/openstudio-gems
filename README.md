@@ -33,6 +33,14 @@ ruby --version
 sqlite3 --version
 ```
 
+On Windows with Powershell
+
+```shell
+conan install . --output-folder=.conandeps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' -c tools.env.virtualenv:powershell=True
+. .\.conandeps\conanbuild.ps1
+ruby --version
+```
+
 Note: If you need to override the date that's part of the filename (defaults to today), set the env variable `DATE`
 
 ```shell

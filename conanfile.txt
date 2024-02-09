@@ -1,7 +1,0 @@
-# This aims to install some dependencies via conan then activating
-# the virtualbuildenv sh/bat script to get the include paths worked out
-[tool_requires]
-sqlite3/3.38.5   # For sqlite3-ruby
-
-[generators]
-VirtualBuildEnv
