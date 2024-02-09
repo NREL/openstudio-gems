@@ -89,7 +89,7 @@ class StaticExtensionPlugin
           extname = "liboga"
         end
 
-        puts "extension=#{extension}"
+        puts "extension=#{extension}, extname=#{extname}"
         puts "installer.spec.full_gem_path=#{installer.spec.full_gem_path}"
         puts "extension_dir=#{extension_dir}, @install_dir=#{@install_dir}"
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
@@ -107,6 +107,10 @@ class StaticExtensionPlugin
         # Tempfile.open %w"siteconf .rb", extension_dir do |siteconf|
           siteconf.puts "require 'mkmf'"
           siteconf.puts "$static = true"
+          # This is missing fPIC
+          if extname == 'unf_ext' and RbConfig::CONFIG['host_os'] =~ /linux/
+            siteconf.puts "$CPPFLAGS << ' ' << '-fPIC'"
+          end
           siteconf.puts "require 'rbconfig'"
           siteconf.puts "dest_path = #{File.absolute_path(tmp_dest).dump}"
           %w[sitearchdir sitelibdir].each do |dir|
