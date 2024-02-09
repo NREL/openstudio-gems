@@ -18,7 +18,7 @@ def system_call(cmd)
   system(new_env, cmd)
 end
 
-def make_package(install_dir, tar_exe, expected_ruby_version)
+def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
 
   #ENV.each_pair do |k,v|
   #  puts "'#{k}' = '#{v}'"
@@ -63,12 +63,9 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     FileUtils.rm_rf(install_dir)
   end
 
-  # Set bundler version here as parsing from gemspec gets wrong version e.g. 'bundler', '>= 2.1.0'
-  bundle_version = "2.5.5"
-
-  puts "Installing bundler #{bundle_version}"
-  system_call("gem install bundler --version #{bundle_version}")
-  system_call("gem install bundler --version #{bundle_version} --install-dir='#{install_dir}/ruby/#{ruby_gem_dir}'")
+  puts "Installing bundler #{bundler_version}"
+  system_call("gem install bundler --version #{bundler_version}")
+  system_call("gem install bundler --version #{bundler_version} --install-dir='#{install_dir}/ruby/#{ruby_gem_dir}'")
 
   ENV['BUNDLE_WITHOUT'] = 'test'
   bundle_exe = File.join("#{install_dir}/ruby/#{ruby_gem_dir}", 'bin', 'bundle')
@@ -82,15 +79,15 @@ def make_package(install_dir, tar_exe, expected_ruby_version)
     FileUtils.rm('Gemfile.lock')
   end
 
-  system_call("ruby #{bundle_exe} _#{bundle_version}_ install --without=test --path='#{install_dir}'")
+  system_call("ruby #{bundle_exe} _#{bundler_version}_ install --without=test --path='#{install_dir}'")
 
-  system_call("ruby #{bundle_exe} _#{bundle_version}_ lock --add_platform ruby")
+  system_call("ruby #{bundle_exe} _#{bundler_version}_ lock --add_platform ruby")
 
   # DLM: don't remove system platforms, that creates problems when running bundle on the command line
   # these will be removed later
   platforms_to_remove = ['mri', 'mingw', 'x64_mingw', 'x64-mingw32', 'rbx', 'jruby', 'mswin', 'mswin64']
   #platforms_to_remove.each do |platform|
-  #  system_call("#{bundle_exe} _#{bundle_version}_ lock --remove_platform #{platform}")
+  #  system_call("#{bundle_exe} _#{bundler_version}_ lock --remove_platform #{platform}")
   #end
 
   FileUtils.rm_rf("#{install_dir}/ruby/#{ruby_gem_dir}/cache")

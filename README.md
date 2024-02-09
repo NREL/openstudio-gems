@@ -27,7 +27,7 @@ To build openstudio-gems package for OpenStudio CLI call `rake make_package`, bu
 
 Using conan v2
 ```
-conan install . --output-folder=.conandeps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20
+conan install . --output-folder=.conandeps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False'
 . ./.conandeps/conanbuild.sh
 ruby --version
 sqlite3 --version

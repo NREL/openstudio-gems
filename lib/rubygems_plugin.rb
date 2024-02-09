@@ -48,6 +48,9 @@ class StaticExtensionPlugin
         Gem::Ext::Builder.run(cmd, results, "make #{target}".rstrip, dest_path)
       rescue Gem::InstallError
         raise unless target == 'clean' # ignore clean failure
+      ensure
+        puts "make results:"
+        puts results.join("\n").strip
       end
     end
   end
@@ -126,7 +129,8 @@ class StaticExtensionPlugin
                 " the mkmf.log which can be found here:\n"
               results << "  " + File.join(tmp_dest, 'mkmf.log') + "\n"
             end
-            puts "results=#{results}"
+            puts "results:"
+            puts results.join("\n").strip
             FileUtils.mv File.join(extension_dir, 'mkmf.log'), tmp_dest
           end
           File.delete(siteconf_path) if File.exist? siteconf_path
