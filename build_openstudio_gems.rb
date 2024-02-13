@@ -43,6 +43,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
     fail "Cannot determine default gem dir"
   end
 
+  # TODO: why?
   if /win/.match(RUBY_PLATFORM) || /mingw/.match(RUBY_PLATFORM)
     ENV['PATH'] = "#{ENV['PATH']};C:\\Program Files\\Git\\cmd"
   end
@@ -202,6 +203,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   else
     date = ENV['DATE']
   end
+  # TODO: at some point we should provide a proper cmake gems-config.cmake
   new_file_name = "openstudio3-gems-#{date}-#{platform_prefix}-#{expected_ruby_version}.tar.gz"
   File.open("#{install_dir}/version.txt", 'w') do |f|
     f.puts new_file_name
@@ -226,6 +228,8 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
     f.puts ")"
   end
 
+  # TODO: no longer chdir'ing, so this shouldn't be necessary
+  puts "Current directory: #{Dir.pwd}"
   Dir.chdir("#{install_dir}/..")
 
   FileUtils.rm_f(new_file_name) if File.exist?(new_file_name)
