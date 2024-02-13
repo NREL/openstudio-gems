@@ -207,6 +207,25 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
     f.puts new_file_name
   end
 
+  # Globbing through 6000 files in cmake everytime we rerun configure takes way
+  # too much time (the worst being windows), so prepare a list for embedding
+  extensions_to_glob = ["rb", "data", "erb", "js", "css", "gif", "png", "html", "idf", "osm", "epw", "ddy", "stat", "csv", "json", "gemspec", "gz", "yml"]
+  puts "Globbing for #{extensions_to_glob} to add it to export-extensions.cmake"
+  gemEmbbedPaths = Dir.glob("**/*.{#{extensions_to_glob.join(",")}}", base: install_dir)
+  puts "Found #{gemEmbbedPaths.size} files"
+  #gemEmbbedPaths = all_files.map{|f| (Pathname.new(f).relative_path_from install_dir).to_s }
+  gemFiles = gemEmbbedPaths.map{|f| "\"${OPENSTUDIO_GEMS_DIR}/#{f}\""}
+  exports_file_name = "#{install_dir}/export-extensions.cmake"
+  File.open(exports_file_name, "a") do |f|
+    f.puts "set(gemsFiles"
+    gemFiles.each {|x| f.puts "  #{x}"}
+    f.puts ")"
+    f.puts
+    f.puts "set(gemEmbbedPaths"
+    gemEmbbedPaths.each {|x| f.puts "  #{x}"}
+    f.puts ")"
+  end
+
   Dir.chdir("#{install_dir}/..")
 
   FileUtils.rm_f(new_file_name) if File.exist?(new_file_name)
