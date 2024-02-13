@@ -122,7 +122,13 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
     FileUtils.rm_rf(f)
   end
 
-  FileUtils.rm_rf("#{install_dir}/ruby/#{ruby_gem_dir}/doc/")
+  Dir.glob("#{install_dir}/ruby/#{ruby_gem_dir}/gems/*/spec")
+
+  folders_to_remove = ["doc", "docs", "test", "spec", "specs"]
+  folders_to_remove.each do |folder|
+    Dir.glob("#{install_dir}/ruby/#{ruby_gem_dir}/gems/*/#{folder}/").each {|f| FileUtils.rm_rf(f) }
+    Dir.glob("#{install_dir}/ruby/#{ruby_gem_dir}/bundler/gems/*//#{folder}/").each {|f| FileUtils.rm_rf(f) }
+  end
 
   standards_gem_dir = nil
   workflow_gem_dir = nil
