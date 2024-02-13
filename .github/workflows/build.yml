@@ -130,9 +130,6 @@ jobs:
         cat $CONAN_PROFILE_DEFAULT
         # Mac has the FreeBSD flavor of sed and MUST take a backup suffix...
         sed -i.bak 's/cppstd=.*$/cppstd=20/g' $CONAN_PROFILE_DEFAULT
-        sed -i.bak 's/build_type=.*$/build_type=${{ matrix.build_type }}/g' $CONAN_PROFILE_DEFAULT
-        # Windows only
-        sed -i.bak 's/compiler.runtime_type=.*$/compiler.runtime_type=${{ matrix.build_type }}/g' $CONAN_PROFILE_DEFAULT
         # if [ "${{ matrix.compiler}}" == "Visual Studio" ]; then
         #   # Remove these
         #   sed -i.bak '/cppstd=.*/d' $CONAN_PROFILE_DEFAULT
@@ -177,13 +174,13 @@ jobs:
           ${{ env.CONAN_USER_HOME }}/short
           ${{ env.CONAN_HOME }}/p
           ${{ env.CONAN_HOME }}/data
-        key: conan-cache-${{ matrix.os }}-build=${{ matrix.build_type }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-cachekey=${{ secrets.CACHE_KEY }}
+        key: conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-cachekey=${{ secrets.CACHE_KEY }}
         restore-keys: |
-          conan-cache-${{ matrix.os }}-build=${{ matrix.build_type }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-
-          conan-cache-${{ matrix.os }}-build=${{ matrix.build_type }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-
-          conan-cache-${{ matrix.os }}-build=${{ matrix.build_type }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-
-          conan-cache-${{ matrix.os }}-build=${{ matrix.build_type }}-compiler=${{ matrix.compiler }}-
-          conan-cache-${{ matrix.os }}-build=${{ matrix.build_type }}-
+          conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-
+          conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-
+          conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-
+          conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-
+          conan-cache-${{ matrix.os }}-
         save-always: ${{ matrix.compiler == 'msvc' }}
 
     - name: Did restoring the conan-cache work? Yes
