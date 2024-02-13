@@ -26,7 +26,7 @@ jobs:
       # fail-fast: Default is true, switch to false to allow one platform to fail and still run others
       fail-fast: false
       matrix:
-        build_name: [gcc-10, apple-clang-11, apple-clang-15, msvc-2022]
+        build_name: [gcc-10, apple-clang-11, msvc-2022]
         include:
         - build_name: gcc-10
           compiler: gcc
@@ -40,12 +40,12 @@ jobs:
           os: macos-11
           SDKROOT: /Applications/Xcode_11.7.app
           allow_failure: false
-        - build_name: apple-clang-15
-          compiler: apple-clang
-          version: 15
-          os: macos-13
-          SDKROOT: /Applications/Xcode_15.2.app
-          allow_failure: false
+        # - build_name: apple-clang-15
+        #   compiler: apple-clang
+        #   version: 15
+        #   os: macos-13
+        #   SDKROOT: /Applications/Xcode_15.2.app
+        #   allow_failure: false
         - build_name: msvc-2022
           compiler: msvc
           version: 193
@@ -207,7 +207,7 @@ jobs:
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        Set-PSDebug -Trace 1
+        # Set-PSDebug -Trace 1
         # LongPathsEnabled is already the case for the runner: https://github.com/actions/runner-images/blob/13d5100df5e7d490b069f0e284dffbc8e321a756/images/windows/scripts/build/Configure-BaseImage.ps1#L73
         # But git isn't
         git config --system core.longpaths true

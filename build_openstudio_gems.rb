@@ -239,7 +239,7 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
 
   FileUtils.rm_f(new_file_name) if File.exist?(new_file_name)
 
-  system_call("\"#{tar_exe}\" -zcvf \"#{new_file_name}\" \"openstudio-gems\"")
+  system_call("\"#{tar_exe}\" -zcf \"#{new_file_name}\" \"openstudio-gems\"")
 
   puts
   puts "You need to manually upload #{new_file_name} to S3:openstudio-resources/dependencies/"
