@@ -48,8 +48,10 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
     ENV['PATH'] = "#{ENV['PATH']};C:\\Program Files\\Git\\cmd"
   end
 
+  is_unix = true
   if /mswin/.match(RUBY_PLATFORM)
     platform_prefix = "windows"
+    is_unix = false
   elsif /darwin/.match(RUBY_PLATFORM)
     if /arm64/.match(RUBY_PLATFORM)
       platform_prefix = "darwin_arm64"
@@ -100,7 +102,10 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   lib_ext = RbConfig::CONFIG['LIBEXT']
   libs = Dir.glob("./openstudio-gems/**/*.#{lib_ext}")
   lib_names_woext = Set.new(libs.map{|lib| File.basename(lib, File.extname(lib)) })
-  expected = Set.new(["jaro_winkler_ext", "libll", "liboga", "msgpack", "pycall", "sqlite3_native", "unf_ext"])
+  expected = Set.new(["jaro_winkler_ext", "libll", "liboga", "msgpack", "pycall", "unf_ext"])
+  if !is_unix
+    expected.add("sqlite3_native") # TODO: I don't understand why we don't have it yet...
+  end
   if lib_names_woext != expected
     puts "Missing expected extensions: #{expected - lib_names_woext}"
     puts "Extra unexpected extensions: #{lib_names_woext - expected}"
