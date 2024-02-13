@@ -210,7 +210,9 @@ jobs:
         # But git isn't
         git config --system core.longpaths true
         # As of 2024-02-13, this commit isn't in conan v2 https://github.com/conan-io/conan/commit/f2b56352f6f597981ccc053f9b7982029b942bf2
-        & "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1"
+        $vspath=$(vswhere -products '*' -requires Microsoft.Component.MSBuild -property installationPath -latest)
+        echo "vspath=$vspath"
+        & "$vspath\Common7\Tools\Launch-VsDevShell.ps1"
         conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' -c tools.env.virtualenv:powershell=True
         & ..\os-gems-deps\conanbuild.ps1
         ruby --version
