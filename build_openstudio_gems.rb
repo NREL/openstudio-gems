@@ -4,6 +4,7 @@ require 'rbconfig'
 require 'open3'
 
 def system_call(cmd)
+  # This will just unset env variables if defined
   new_env = {}
   new_env['BUNDLER_ORIG_MANPATH'] = nil
   new_env['BUNDLER_ORIG_PATH'] = nil
@@ -12,7 +13,12 @@ def system_call(cmd)
   new_env['BUNDLE_GEMFILE'] = nil
   new_env['RUBYLIB'] = nil
   new_env['RUBYOPT'] = nil
-  new_env['BUNDLE_PATH'] = nil
+
+  # BUNDLE_PATH, BUNDLE_WITHOUT and BUILD_BUILD__SQLITE3 are set correctly from
+  # conanfile, so do not touch them
+  # new_env['BUNDLE_PATH'] = "./openstudio-gems"
+  # new_env['BUNDLE_WITHOUT'] = "test"
+  # new_env['BUNDLE_BUILD__SQLITE3'] = "--enable-system-libraries --with-pkg-config=pkgconf"
 
   puts cmd
   system(new_env, cmd)
@@ -24,7 +30,9 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   #  puts "'#{k}' = '#{v}'"
   #end
 
-  ENV['PATH'] = "#{ENV['PATH']}#{File::PATH_SEPARATOR}#{File.dirname(tar_exe)}"
+  if ENV['BUNDLE_PATH'].nil?
+    raise "BUNDLE_PATH is nil, did you forget to load conanbuild?"
+  end
 
   if RUBY_VERSION != expected_ruby_version
     raise "Incorrect Ruby version #{RUBY_VERSION} used, expecting #{expected_ruby_version}"
@@ -64,12 +72,15 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   end
 
   puts "Installing bundler #{bundler_version}"
+  # TODO: Why twice?
   system_call("gem install bundler --version #{bundler_version}")
   system_call("gem install bundler --version #{bundler_version} --install-dir='#{install_dir}/ruby/#{ruby_gem_dir}'")
 
-  ENV['BUNDLE_WITHOUT'] = 'test'
-  bundle_exe = File.join("#{install_dir}/ruby/#{ruby_gem_dir}", 'bin', 'bundle')
+  # ENV['BUNDLE_WITHOUT'] = 'test'
+  # ENV['BUNDLE_PATH'] = install_dir
 
+  bundle_exe = File.join("#{install_dir}/ruby/#{ruby_gem_dir}", 'bin', 'bundle')
+  bundle_cmd = "ruby #{bundle_exe} _#{bundler_version}_"
   if !File.exist?(bundle_exe)
     raise "Required bundle executable not found"
   end
@@ -79,9 +90,13 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
     FileUtils.rm('Gemfile.lock')
   end
 
-  system_call("ruby #{bundle_exe} _#{bundler_version}_ install --without=test --path='#{install_dir}'")
+  puts "=" * 33 + " bundle config " + "=" * 32
+  system_call("#{bundle_cmd} config")
+  puts "=" * 80
 
-  system_call("ruby #{bundle_exe} _#{bundler_version}_ lock --add_platform ruby")
+  system_call("#{bundle_cmd} install")
+
+  system_call("#{bundle_cmd} lock --add_platform ruby")
 
   # DLM: don't remove system platforms, that creates problems when running bundle on the command line
   # these will be removed later
