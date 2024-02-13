@@ -85,6 +85,7 @@ jobs:
         echo "CONAN_USER_HOME=$CONAN_USER_HOME" >> "$GITHUB_OUTPUT"
         echo CONAN_USER_HOME="$CONAN_USER_HOME" >> $GITHUB_ENV
         if [ "$RUNNER_OS" == "macOS" ]; then
+          brew install md5sha1sum
           sudo xcode-select -switch "${{ matrix.SDKROOT }}"
           clang --version
           sdk_path=$(xcrun --sdk macosx --show-sdk-path)
