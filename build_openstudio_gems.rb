@@ -96,6 +96,16 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
 
   system_call("#{bundle_cmd} install")
 
+  lib_ext = RbConfig::CONFIG['LIBEXT']
+  libs = Dir.glob("./openstudio-gems/**/*.#{lib_ext}")
+  lib_names_woext = Set.new(libs.map{|lib| File.basename(lib, File.extname(lib)) })
+  expected = Set.new(["jaro_winkler_ext", "libll", "liboga", "msgpack", "pycall", "sqlite3_native", "unf_ext"])
+  if lib_names_woext != expected
+    puts "Missing expected extensions: #{expected - lib_names_woext}"
+    puts "Extra unexpected extensions: #{lib_names_woext - expected}"
+    raise "Unexpected results with native extensions"
+  end
+
   system_call("#{bundle_cmd} lock --add_platform ruby")
 
   # DLM: don't remove system platforms, that creates problems when running bundle on the command line
