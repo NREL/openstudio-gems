@@ -224,11 +224,11 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   gemFiles = gemEmbbedPaths.map{|f| "\"${OPENSTUDIO_GEMS_DIR}/#{f}\""}
   exports_file_name = "#{install_dir}/export-extensions.cmake"
   File.open(exports_file_name, "a") do |f|
-    f.puts "set(gemsFiles"
+    f.puts "set(gemFiles"
     gemFiles.each {|x| f.puts "  #{x}"}
     f.puts ")"
     f.puts
-    f.puts "set(gemEmbbedPaths"
+    f.puts "set(gemEmbeddedPaths"
     gemEmbbedPaths.each {|x| f.puts "  #{x}"}
     f.puts ")"
   end
