@@ -18,7 +18,7 @@ if !MINIMAL_GEMS
   # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
   gem 'addressable', '= 2.8.1'
   gem 'openstudio-standards', '= 0.5.0'
-  gem 'json_schemer', '= 2.0.0'
+  # gem 'json_schemer', '= 2.0.0' # Disabled, see #72 and https://github.com/NREL/OpenStudio/issues/4969#issuecomment-1943418472
 end
 
 if LOCAL_DEV
