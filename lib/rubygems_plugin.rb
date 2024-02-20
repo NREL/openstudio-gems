@@ -81,6 +81,8 @@ class StaticExtensionPlugin
           extname = "sqlite3_native"
         elsif extname.to_s == "oga"
           extname = "liboga"
+        elsif extname.to_s == "cparse"
+          # racc/cparse/
         end
 
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
