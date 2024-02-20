@@ -29,6 +29,7 @@ group :native_ext do
   gem 'oga', '3.2'
   # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
   gem 'msgpack', '1.4.2'
+  gem 'racc', '1.7.3'
 end
 
 # leave this line in for now as we may try to get nokogiri to compile correctly on windows
