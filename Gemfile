@@ -28,9 +28,9 @@ if LOCAL_DEV
   if !MINIMAL_GEMS
     gem 'tbd', path: '../tbd'
     gem 'osut', path: '../osut'
-    gem 'openstudio-extension', '= 0.7.1', path: '../openstudio-extension-gem'
-    gem 'openstudio-workflow', '= 2.3.1', path: '../OpenStudio-workflow-gem'
-    gem 'openstudio_measure_tester', '= 0.3.3', path: "../OpenStudio-measure-tester-gem"
+    gem 'openstudio-extension', '= 0.8.0', path: '../openstudio-extension-gem'
+    gem 'openstudio-workflow', '= 2.4.0', path: '../OpenStudio-workflow-gem'
+    gem 'openstudio_measure_tester', '= 0.4.0', path: "../OpenStudio-measure-tester-gem"
     gem 'bcl', path: '../bcl-gem'
   end
 
@@ -48,16 +48,16 @@ if LOCAL_DEV
 
 elsif !FINAL_PACKAGE
 
-  gem 'oslg', :github => 'jmarrec/oslg', :ref => 'ruby3'
+  gem 'oslg', '= 0.3.0'
 
   if !MINIMAL_GEMS
-    gem 'tbd', :github => 'jmarrec/tbd', :ref => 'ruby3'
-    gem 'osut', :github => 'jmarrec/osut', :ref => 'ruby3'
+    gem 'tbd', '= 3.4.1'
+    gem 'osut', '= 0.5.0'
 
-    gem 'openstudio-extension', '= 0.7.1',:github => 'NREL/openstudio-extension-gem', :ref => 'ruby3'
-    gem 'openstudio-workflow', '= 2.3.1', :github => 'NREL/OpenStudio-workflow-gem', :ref => 'ruby3'
-    gem 'openstudio_measure_tester', '= 0.3.3', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => 'ruby3'
-    gem 'bcl', "= 0.8.0", :github => 'jmarrec/bcl-gem', :ref => 'ruby3'
+    gem 'openstudio-extension', '= 0.8.0',:github => 'NREL/openstudio-extension-gem', :ref => '5f063c2a293f3ec602288140ad34dcf84ce4270e'
+    gem 'openstudio-workflow', '= 2.4.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => 'cfd5cf4416f8f3b925d8010c7c3870084724a91e'
+    gem 'openstudio_measure_tester', '= 0.4.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '1baa9e70254a0cdb6740ccf14052baada8cf9e1c'
+    gem 'bcl', "= 0.8.0", :github => 'NREL/bcl-gem', :ref => '3c60cadc781410819e7c9bfb8d7ba1af146d9abd'
   end
 
   group :native_ext do
@@ -79,15 +79,15 @@ else
 
   puts "FINAL_PACKAGE"
 
-  gem 'oslg'
+  gem 'oslg', '= 0.3.0'
 
   if !MINIMAL_GEMS
-    gem 'tbd'
-    gem 'osut'
+    gem 'tbd', '= 3.4.1'
+    gem 'osut', '= 0.5.0'
 
-    gem 'openstudio-extension', '= 0.7.1'
-    gem 'openstudio-workflow', '= 2.3.1'
-    gem 'openstudio_measure_tester', '= 0.3.3'
+    gem 'openstudio-extension', '= 0.8.0'
+    gem 'openstudio-workflow', '= 2.4.0'
+    gem 'openstudio_measure_tester', '= 0.4.0'
     gem 'bcl', "= 0.8.0"
   end
 
