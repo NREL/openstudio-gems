@@ -19,6 +19,9 @@ jobs:
 
     steps:
 
+    # Only done so I can access the create_cmakelist_diff.py
+    - uses: actions/checkout@v4
+
     - name: Download binaries
       shell: bash
       run: |
@@ -61,12 +64,11 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: '*.txt'
+        file: '*sums.txt'
         tag: ${{ env.TAG_NAME }}
         overwrite: true
         file_glob: true
 
-    - uses: actions/checkout@v4
     - name: Create an OpenStudio CMakeLists.txt diff
       shell: bash
       run: |
