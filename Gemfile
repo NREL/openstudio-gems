@@ -37,7 +37,6 @@ if LOCAL_DEV
   group :native_ext do
     gem 'jaro_winkler',  path: '../ext/jaro_winkler'
     if !MINIMAL_GEMS
-      gem 'pycall', path: '../ext/pycall.rb'
       gem 'sqlite3', path: '../ext/sqlite3-ruby'
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
       gem 'oga', '3.2'
@@ -64,7 +63,6 @@ elsif !FINAL_PACKAGE
     gem 'jaro_winkler', '= 1.5.6', :github => 'jmarrec/jaro_winkler', :ref => 'msvc-ruby3'
 
     if !MINIMAL_GEMS
-      gem 'pycall', '= 1.5.1', :github => 'jmarrec/pycall.rb', :ref => 'update-finder-v1.5.1'
       # gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
       # gem 'sqlite3', :github => 'sparklemotion/sqlite3-ruby', :ref => "v1.7.2"
       gem 'sqlite3', '= 1.7.2'
@@ -95,7 +93,6 @@ else
     gem 'jaro_winkler', '= 1.5.6'
 
     if !MINIMAL_GEMS
-      gem 'pycall', '= 1.5.1'
       # gem 'sqlite3'
       # gem 'sqlite3'
       gem 'sqlite3', '= 1.7.2'
