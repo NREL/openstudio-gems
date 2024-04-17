@@ -241,14 +241,6 @@ jobs:
         overwrite: true
         file_glob: true
 
-    - name: Trigger the Checksums workflow
-      if: contains(github.ref, 'refs/tags')
-      shell: bash
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh workflow -R ${{ github.repository }} run checksums.yml -f tag=${{ github.ref_name }}
-
     - name: Remove non-critical folders from the conan cache
       shell: bash
       if: ${{ contains(github.ref, 'refs/tags') || ((github.event_name == 'push' &&  github.ref == 'refs/heads/main')) }}
@@ -259,3 +251,17 @@ jobs:
         else
           conan cache clean --source --build --download --temp
         fi
+
+
+  # Only trigger checksums if all builds succeded and it's a tag
+  trigger_cheksum:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger the Checksums workflow
+      if: contains(github.ref, 'refs/tags')
+      shell: bash
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh workflow -R ${{ github.repository }} run checksums.yml -f tag=${{ github.ref_name }}
