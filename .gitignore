@@ -12,6 +12,10 @@
 /build/
 /openstudio-gems/
 
+.tmp_diff
+md5sums.txt
+sha256sums.txt
+
 # ignore tar.gz files
 *.tar.gz
 
