@@ -247,7 +247,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh workflow -R ${{ github.repository }} run checksums.yml -f tag=${{ github.ref }}
+        gh workflow -R ${{ github.repository }} run checksums.yml -f tag=${{ github.ref_name }}
 
     - name: Remove non-critical folders from the conan cache
       shell: bash
