@@ -253,7 +253,16 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   # too much time (the worst being windows), so prepare a list for embedding
   extensions_to_glob = ["rb", "data", "erb", "js", "css", "gif", "png", "html", "idf", "osm", "epw", "ddy", "stat", "csv", "json", "gemspec", "gz", "yml"]
   puts "Globbing for #{extensions_to_glob} to add it to export-extensions.cmake"
-  gemEmbbedPaths = Dir.glob("**/*.{#{extensions_to_glob.join(",")}}", base: install_dir)
+  measure_tester_rubocop_yml = Dir.glob("**/openstudio_measure_tester*/.rubocop.yml", base: install_dir)
+  raise "openstudio_measure_tester .rubocop.yml not found: '#{measure_tester_rubocop_yml}'" unless measure_tester_rubocop_yml.size == 1
+  measure_tester_rubocop_yml = measure_tester_rubocop_yml.first
+  # gemEmbbedPaths = Dir.glob("**/*.{#{extensions_to_glob.join(",")}}", base: install_dir)
+  # gemEmbbedPaths << measure_tester_rubocop_yml
+  gemEmbbedPaths = Dir.glob("**/*.{#{extensions_to_glob.join(",")}}", File::FNM_DOTMATCH, base: install_dir)
+  raise "Missing openstudio_measure_tester .rubocop.yml which is needed" unless gemEmbbedPaths.include?(measure_tester_rubocop_yml)
+  gemEmbbedPaths.reject! { |x| File.basename(x) == '.travis.yml' || (File.basename(x).include?('.rubocop') && !x.include?('openstudio_measure_tester')) }
+  raise "Missing openstudio_measure_tester .rubocop.yml which is needed" unless gemEmbbedPaths.include?(measure_tester_rubocop_yml)
+
   puts "Found #{gemEmbbedPaths.size} files"
   #gemEmbbedPaths = all_files.map{|f| (Pathname.new(f).relative_path_from install_dir).to_s }
   gemFiles = gemEmbbedPaths.map{|f| "\"${OPENSTUDIO_GEMS_DIR}/#{f}\""}
