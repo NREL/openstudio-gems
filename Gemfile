@@ -12,7 +12,8 @@ gemspec
 # This is needed if the version of the gem you want to use is not on rubygems
 
 LOCAL_DEV = false
-MINIMAL_GEMS = false    # Keep only one non-native gem, and one native
+MINIMAL_GEMS = false   # Keep only one non-native gem, and one native
+FINAL_PACKAGE = !ENV['FINAL_PACKAGE'].nil?
 
 if !MINIMAL_GEMS
   # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
@@ -45,7 +46,7 @@ if LOCAL_DEV
     end
   end
 
-else
+elsif !FINAL_PACKAGE
 
   gem 'oslg', :github => 'jmarrec/oslg', :ref => 'ruby3'
 
@@ -74,6 +75,38 @@ else
       gem 'msgpack', '1.7.2'
     end
   end
+else
+
+  puts "FINAL_PACKAGE"
+
+  gem 'oslg'
+
+  if !MINIMAL_GEMS
+    gem 'tbd'
+    gem 'osut'
+
+    gem 'openstudio-extension', '= 0.7.1'
+    gem 'openstudio-workflow', '= 2.3.1'
+    gem 'openstudio_measure_tester', '= 0.3.3'
+    gem 'bcl', "= 0.8.0"
+  end
+
+  group :native_ext do
+    gem 'jaro_winkler', '= 1.5.6'
+
+    if !MINIMAL_GEMS
+      gem 'pycall', '= 1.5.1'
+      # gem 'sqlite3'
+      # gem 'sqlite3'
+      gem 'sqlite3', '= 1.7.2'
+
+      # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
+      gem 'oga', '3.2'
+      # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
+      gem 'msgpack', '1.7.2'
+    end
+  end
+
 end
 
 # leave this line in for now as we may try to get nokogiri to compile correctly on windows

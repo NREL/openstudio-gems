@@ -11,6 +11,8 @@
 /tmp/
 /build/
 /openstudio-gems/
+/vendor/
+.gem*/
 
 # ignore tar.gz files
 *.tar.gz

@@ -32,8 +32,13 @@ class GemsRecipe(ConanFile):
         # TODO: consider just comitting the ./bundle/config file
         env.define("BUNDLE_PATH", "./openstudio-gems")
         env.define("BUNDLE_WITHOUT", "test")
+        # env.define("BUNDLE_NO_PRUNE", "true")
+        env.define("BUNDLE_CACHE_ALL", "true")
+        # env.define("BUNDLE_DISABLE_CHECKSUM_VALIDATION", "true")
+
         # This is going to be ignored in lib/rubygems_plugin.rb in post_install, so I'll redefine it there
         env.define("BUNDLE_BUILD__SQLITE3", "--enable-system-libraries --with-pkg-config=pkgconf")
+
         env.define("PKG_CONFIG_PATH", os.path.abspath("."))
         env.vars(self, scope="build").save_script("conanbuild_gems")
 

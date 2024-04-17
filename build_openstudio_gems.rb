@@ -3,7 +3,7 @@ require 'time'
 require 'rbconfig'
 require 'open3'
 
-def system_call(cmd)
+def system_call(cmd, is_final = false)
   # This will just unset env variables if defined
   new_env = {}
   new_env['BUNDLER_ORIG_MANPATH'] = nil
@@ -13,6 +13,9 @@ def system_call(cmd)
   new_env['BUNDLE_GEMFILE'] = nil
   new_env['RUBYLIB'] = nil
   new_env['RUBYOPT'] = nil
+  if is_final
+    new_env["FINAL_PACKAGE"] = "true"
+  end
 
   # BUNDLE_PATH, BUNDLE_WITHOUT and BUILD_BUILD__SQLITE3 are set correctly from
   # conanfile, so do not touch them
@@ -97,7 +100,38 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   system_call("#{bundle_cmd} config")
   puts "=" * 80
 
-  system_call("#{bundle_cmd} install")
+  puts "=" * 16 + " precaching packages and building them manually " + "=" * 16
+  # Shenigans onto shenanigans: Bundler, when you specify :git or :path
+  # actually installs in #{install_dir}/ruby/#{ruby_gem_dir} under the
+  # bundler/gems folder, and not under the gems/ one
+  # and that's causing a lot of troubles for openstudio to find them
+  # So here we:
+  #   * Download everything into the vendor/cache folder
+  #   * Find everything that's a directory, not a .gem file, go in there, build
+  #   it and move it back up
+  #   * Then we bundle install --local to use that vendor/cache,
+  #   and all is _well_
+  system_call("#{bundle_cmd} cache --no-install") # No need for "--all" conanfile sets BUNDLE_CACHE_ALL, and specifying it prints an annoying warning
+
+  Dir.glob("vendor/cache/*").select{|x| File.directory?(x)}.each do |d|
+    gemspec = nil
+    if d.include?("jaro_winkler")
+      gemspec = "jaro_winkler.gemspec"
+    end
+
+    Dir.chdir(d) do
+      system("gem build #{gemspec}")
+      Dir.glob("*.gem").each { |x| FileUtils.move(x, "..") }
+    end
+    FileUtils.rm_rf(d)
+  end
+
+  FileUtils.rm_rf("#{install_dir}/ruby/#{ruby_gem_dir}/bundler")
+  puts "=" * 80
+
+  puts "=" * 26 + " installing from local cache " + "=" * 25
+  system_call("#{bundle_cmd} install --local --no-cache", true)
+  puts "=" * 80
 
   lib_ext = RbConfig::CONFIG['LIBEXT']
   libs = Dir.glob("./openstudio-gems/**/*.#{lib_ext}")
@@ -112,7 +146,8 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
     raise "Unexpected results with native extensions"
   end
 
-  system_call("#{bundle_cmd} lock --add_platform ruby")
+  FileUtils.rm_f("#{install_dir}/Gemfile.lock")
+  system_call("#{bundle_cmd} lock --add_platform ruby", true) # TODO need --local ?
 
   # DLM: don't remove system platforms, that creates problems when running bundle on the command line
   # these will be removed later
