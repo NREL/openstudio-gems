@@ -18,7 +18,6 @@ FINAL_PACKAGE = !ENV['FINAL_PACKAGE'].nil?
 if !MINIMAL_GEMS
   # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
   gem 'addressable', '= 2.8.1'
-  gem 'openstudio-standards', '= 0.5.0'
   # gem 'json_schemer', '= 2.0.0' # Disabled, see #72 and https://github.com/NREL/OpenStudio/issues/4969#issuecomment-1943418472
 end
 
@@ -28,6 +27,7 @@ if LOCAL_DEV
   if !MINIMAL_GEMS
     gem 'tbd', path: '../tbd'
     gem 'osut', path: '../osut'
+    gem 'openstudio-standards', '= 0.6.0.rc1', path: '../openstudio-standards'
     gem 'openstudio-extension', '= 0.8.0', path: '../openstudio-extension-gem'
     gem 'openstudio-workflow', '= 2.4.0', path: '../OpenStudio-workflow-gem'
     gem 'openstudio_measure_tester', '= 0.4.0', path: "../OpenStudio-measure-tester-gem"
@@ -53,8 +53,9 @@ elsif !FINAL_PACKAGE
     gem 'tbd', '= 3.4.1'
     gem 'osut', '= 0.5.0'
 
+    gem 'openstudio-standards', '= 0.6.0.rc1', :github => 'NREL/openstudio-standards', :ref => 'v0.6.0.rc1'
     gem 'openstudio-extension', '= 0.8.0',:github => 'NREL/openstudio-extension-gem', :ref => '5f063c2a293f3ec602288140ad34dcf84ce4270e'
-    gem 'openstudio-workflow', '= 2.4.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => 'cfd5cf4416f8f3b925d8010c7c3870084724a91e'
+    gem 'openstudio-workflow', '= 2.4.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => 'd9f87b803c622aa6c45029a133f52f3a5c6bb0bc'
     gem 'openstudio_measure_tester', '= 0.4.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '1baa9e70254a0cdb6740ccf14052baada8cf9e1c'
     gem 'bcl', "= 0.8.0", :github => 'NREL/bcl-gem', :ref => '3c60cadc781410819e7c9bfb8d7ba1af146d9abd'
   end
@@ -83,6 +84,7 @@ else
     gem 'tbd', '= 3.4.1'
     gem 'osut', '= 0.5.0'
 
+    gem 'openstudio-standards', '= 0.6.0.rc1'
     gem 'openstudio-extension', '= 0.8.0'
     gem 'openstudio-workflow', '= 2.4.0'
     gem 'openstudio_measure_tester', '= 0.4.0'
