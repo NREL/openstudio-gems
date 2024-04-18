@@ -73,7 +73,7 @@ jobs:
       shell: bash
       run: |
         python -m pip install requests
-        python create_cmakelist_diff.py --tag-name ${{ env.TAG_NAME }} --md5-file md5sums.txt
+        python create_cmakelist_diff.py --tag-name '${{ env.TAG_NAME }}' --org-name '${{ github.repository_owner }}' --md5-file md5sums.txt
 
     - name: Upload CMakeLists diff to release
       uses: svenstaro/upload-release-action@v2
