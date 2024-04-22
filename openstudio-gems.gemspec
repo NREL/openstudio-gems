@@ -24,9 +24,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'parallel', '1.19.1'
 
-  # 20200324 TJC json native is enabled for all platforms and is included when building ruby
-  spec.add_dependency 'json_pure', '2.2'
-
   # development dependencies need not be specified so strictly
   # these will not be enforced by consumers of this spec
   # bundle version is parsed by build_openstudio_gems.rb, specify all three numbers
