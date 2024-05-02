@@ -13,7 +13,8 @@ gemspec
 
 LOCAL_DEV = false
 MINIMAL_GEMS = false   # Keep only one non-native gem, and one native
-FINAL_PACKAGE = !ENV['FINAL_PACKAGE'].nil?
+FINAL_PACKAGE = !ENV['FINAL_PACKAGE'].nil? # used to package the final version of the gem, after all gems has been released.
+RC_RELEASE = !ENV['RC_RELEASE'].nil? #used to package the release candidate version of the gem
 
 if !MINIMAL_GEMS
   # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
@@ -45,15 +46,16 @@ if LOCAL_DEV
     end
   end
 
-elsif !FINAL_PACKAGE
+elsif RC_RELEASE
 
+  puts "RC_RELEASE"
   gem 'oslg', '= 0.3.0'
 
   if !MINIMAL_GEMS
     gem 'tbd', '= 3.4.1'
     gem 'osut', '= 0.5.0'
 
-    gem 'openstudio-standards', '= 0.6.0.rc1', :github => 'NREL/openstudio-standards', :ref => 'v0.6.0.rc1'
+    gem 'openstudio-standards', '= 0.6.0.rc2'
     gem 'openstudio-extension', '= 0.8.0',:github => 'NREL/openstudio-extension-gem', :ref => '2e86077dce1688443cca462feda3239ef47c232c'
     gem 'openstudio-workflow', '= 2.4.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => '32126e9b9f6bd6ed1ee55331f6dadbb3ba1e7cd2'
     gem 'openstudio_measure_tester', '= 0.4.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '89b9b7eb5f2d2ef91e225585a09e076577f25d4a'
@@ -74,7 +76,8 @@ elsif !FINAL_PACKAGE
       gem 'msgpack', '1.7.2'
     end
   end
-else
+
+elsif FINAL_PACKAGE
 
   puts "FINAL_PACKAGE"
 
@@ -97,6 +100,35 @@ else
     if !MINIMAL_GEMS
       # gem 'sqlite3'
       # gem 'sqlite3'
+      gem 'sqlite3', '= 1.7.2'
+
+      # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
+      gem 'oga', '3.2'
+      # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
+      gem 'msgpack', '1.7.2'
+    end
+  end
+
+else
+  gem 'oslg', '= 0.3.0'
+
+  if !MINIMAL_GEMS
+    gem 'tbd', '= 3.4.1'
+    gem 'osut', '= 0.5.0'
+
+    gem 'openstudio-standards', '= 0.6.0.rc1', :github => 'NREL/openstudio-standards', :ref => 'v0.6.0.rc1'
+    gem 'openstudio-extension', '= 0.8.0',:github => 'NREL/openstudio-extension-gem', :ref => '2e86077dce1688443cca462feda3239ef47c232c'
+    gem 'openstudio-workflow', '= 2.4.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => '32126e9b9f6bd6ed1ee55331f6dadbb3ba1e7cd2'
+    gem 'openstudio_measure_tester', '= 0.4.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '89b9b7eb5f2d2ef91e225585a09e076577f25d4a'
+    gem 'bcl', "= 0.8.0", :github => 'NREL/bcl-gem', :ref => '3c60cadc781410819e7c9bfb8d7ba1af146d9abd'
+  end
+
+  group :native_ext do
+    gem 'jaro_winkler', '= 1.5.6', :github => 'jmarrec/jaro_winkler', :ref => 'msvc-ruby3'
+
+    if !MINIMAL_GEMS
+      # gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
+      # gem 'sqlite3', :github => 'sparklemotion/sqlite3-ruby', :ref => "v1.7.2"
       gem 'sqlite3', '= 1.7.2'
 
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
