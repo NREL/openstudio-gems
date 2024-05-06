@@ -71,7 +71,7 @@ jobs:
       shell: bash
       run: |
         set -x
-        pip install conan
+        pip install conan==2.2.2
 
         conan --version
         if [ "$RUNNER_OS" == "Windows" ]; then
