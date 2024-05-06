@@ -89,7 +89,12 @@ class StaticExtensionPlugin
         elsif extname.to_s == "sqlite3"
           extname = "sqlite3_native"
           extconf_args = ["--enable-system-libraries", "--with-pkg-config=pkgconf"]
-        elsif ['unfext', 'byebug', 'generator', 'parser'].include?(extname.to_s)
+        elsif extname.to_s == 'json'
+          # json has a makefile, but really it's only json/ext/parser and
+          # json/ext/generator that are compiled
+          puts "Not exporting json because it's shallow and doesn't have a static lib (parser and generator do). #{extension_dir.to_s}"
+          next
+        elsif ['unfext', 'byebug', 'msgpack', 'generator', 'parser'].include?(extname.to_s)
           # No-op
         else
           puts "Warning: rubygems_plugin.post_install: no configuration given for extension_dir=#{extension_dir}"
