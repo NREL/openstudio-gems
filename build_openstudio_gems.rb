@@ -3,7 +3,7 @@ require 'time'
 require 'rbconfig'
 require 'open3'
 
-def system_call(cmd, is_final = false)
+def system_call(cmd, is_final = true)
   # This will just unset env variables if defined
   new_env = {}
   new_env['BUNDLER_ORIG_MANPATH'] = nil
