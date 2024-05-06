@@ -89,7 +89,7 @@ class StaticExtensionPlugin
         elsif extname.to_s == "sqlite3"
           extname = "sqlite3_native"
           extconf_args = ["--enable-system-libraries", "--with-pkg-config=pkgconf"]
-        elsif ['unfext', 'byebug', 'generator', 'parser'].include?(extname.to_s)
+        elsif ['unfext', 'byebug', 'msgpack', 'json', 'generator', 'parser'].include?(extname.to_s)
           # No-op
         else
           puts "Warning: rubygems_plugin.post_install: no configuration given for extension_dir=#{extension_dir}"
@@ -148,24 +148,30 @@ class StaticExtensionPlugin
 
         StaticExtensionPlugin.make_static extension_dir, results
 
-        File.open(@ext_init_file_name, "a") do |f|
-          f.puts "extern \"C\" {"
-          f.puts "  void Init_#{extname}(void);"
-          f.puts "}"
-          f.puts
-          f.puts "namespace embedded_help {"
-          f.puts "  inline void init_#{extname}() {"
-          f.puts "    Init_#{extname}();"
-          f.puts "  }"
-          f.puts "}"
-          f.puts
-        end
+        # json has a makefile, but really it's only json/ext/parser and
+        # json/ext/generator that are compiled
+        if extname.to_s == 'json'
+          puts "Not exporting json because it's shallow and doesn't have a static lib (parser and generator do). #{extension_dir.to_s}"
+        else
+          File.open(@ext_init_file_name, "a") do |f|
+            f.puts "extern \"C\" {"
+            f.puts "  void Init_#{extname}(void);"
+            f.puts "}"
+            f.puts
+            f.puts "namespace embedded_help {"
+            f.puts "  inline void init_#{extname}() {"
+            f.puts "    Init_#{extname}();"
+            f.puts "  }"
+            f.puts "}"
+            f.puts
+          end
 
-        File.open(@exports_file_name, "a") do |f|
-          f.puts "add_library(#{target_name} STATIC IMPORTED)"
-          f.puts "set_target_properties(#{target_name} PROPERTIES IMPORTED_LOCATION \"${OPENSTUDIO_GEMS_DIR}#{lib_path}\")"
-          f.puts "list(APPEND ruby_extension_libs #{target_name})"
-          f.puts
+          File.open(@exports_file_name, "a") do |f|
+            f.puts "add_library(#{target_name} STATIC IMPORTED)"
+            f.puts "set_target_properties(#{target_name} PROPERTIES IMPORTED_LOCATION \"${OPENSTUDIO_GEMS_DIR}#{lib_path}\")"
+            f.puts "list(APPEND ruby_extension_libs #{target_name})"
+            f.puts
+          end
         end
       end
     end
