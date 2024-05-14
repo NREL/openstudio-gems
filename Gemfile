@@ -90,7 +90,7 @@ else
     gem 'tbd', '= 3.4.1'
     gem 'osut', '= 0.5.0'
 
-    gem 'openstudio-standards', '= 0.6.0.rc2'
+    gem 'openstudio-standards', '= 0.6.0'
     gem 'openstudio-extension', '= 0.8.0'
     gem 'openstudio-workflow', '= 2.4.0'
     gem 'openstudio_measure_tester', '= 0.4.0'
