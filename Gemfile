@@ -58,7 +58,7 @@ elsif !FINAL_PACKAGE
     # gem 'openstudio-workflow', '= 2.4.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => '32126e9b9f6bd6ed1ee55331f6dadbb3ba1e7cd2'
     # gem 'openstudio_measure_tester', '= 0.4.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '89b9b7eb5f2d2ef91e225585a09e076577f25d4a'
     # gem 'bcl', "= 0.8.0", :github => 'NREL/bcl-gem', :ref => '3c60cadc781410819e7c9bfb8d7ba1af146d9abd'
-    gem 'openstudio-standards', '= 0.6.0.rc2'
+    gem 'openstudio-standards', '= 0.6.0'
     gem 'openstudio-extension', '= 0.8.0'
     gem 'openstudio-workflow', '= 2.4.0'
     gem 'openstudio_measure_tester', '= 0.4.0'
