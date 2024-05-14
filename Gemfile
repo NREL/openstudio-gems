@@ -27,7 +27,7 @@ if LOCAL_DEV
   if !MINIMAL_GEMS
     gem 'tbd', path: '../tbd'
     gem 'osut', path: '../osut'
-    gem 'openstudio-standards', '= 0.6.0.rc2', path: '../openstudio-standards'
+    gem 'openstudio-standards', '= 0.6.0', path: '../openstudio-standards'
     gem 'openstudio-extension', '= 0.8.0', path: '../openstudio-extension-gem'
     gem 'openstudio-workflow', '= 2.4.0', path: '../OpenStudio-workflow-gem'
     gem 'openstudio_measure_tester', '= 0.4.0', path: "../OpenStudio-measure-tester-gem"
