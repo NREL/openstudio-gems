@@ -64,6 +64,9 @@ elsif !FINAL_PACKAGE
     gem 'openstudio_measure_tester', '= 0.4.0'
     gem 'bcl', "= 0.8.0"
 
+    # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
+    # itself already has json 2.6.2 which is good enough
+    gem 'rubocop', :github => 'jmarrec/rubocop', :ref => '1.50.0-no_json'
   end
 
   group :native_ext do
