@@ -21,6 +21,12 @@ if !MINIMAL_GEMS
   # gem 'json_schemer', '= 2.0.0' # Disabled, see #72 and https://github.com/NREL/OpenStudio/issues/4969#issuecomment-1943418472
 end
 
+if !MINIMAL_GEMS
+  # 2.9.1 changed a bunch of require with require_relative and that's
+  # apparently causing problems
+  gem 'regexp_parser', '2.9.0'
+end
+
 if LOCAL_DEV
 
   gem 'oslg', path: '../oslg'
