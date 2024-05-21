@@ -96,4 +96,4 @@ If you definitely need a native gem that is NOT part of the CLI already, then ei
 
 * It should be part of the CLI anyways if you intend to use the CLI to run your thing... So request it, and we'll see if we can compile it statically (for MSVC especially)
 * Otherwise don't try to use the CLI with `--bundle` (via for eg `rake openstudio:test_with_openstudiowhich` uses a CLI call with `--bundle` underneath). 
-        * You **can** use the `openstudio-measure-tester-gem` directly without the `openstudio-extension-gem` and stay in ruby... Or use `Rake::TestTask` or a modified version of that directly.
+    * Note that you **can** use the `openstudio-measure-tester-gem` directly without the `openstudio-extension-gem` and stay in ruby... Or use `Rake::TestTask` or a modified version of that directly.
