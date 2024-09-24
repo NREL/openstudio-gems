@@ -25,6 +25,7 @@ if !MINIMAL_GEMS
   # 2.9.1 changed a bunch of require with require_relative and that's
   # apparently causing problems
   gem 'regexp_parser', '2.9.0'
+  gem 'rexml', '3.2.8'
 end
 
 if LOCAL_DEV
@@ -68,7 +69,7 @@ elsif !FINAL_PACKAGE
     gem 'openstudio-extension', '= 0.8.0'
     gem 'openstudio-workflow', '= 2.4.0'
     gem 'openstudio_measure_tester', '= 0.4.0'
-    gem 'bcl', "= 0.8.0"
+    gem 'bcl', "= 0.8.0", :github => 'jmarrec/bcl-gem', :ref => 'rexml'
 
     # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
     # itself already has json 2.6.2 which is good enough
