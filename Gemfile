@@ -56,7 +56,7 @@ elsif !FINAL_PACKAGE
   gem 'oslg', '= 0.3.0'
 
   if !MINIMAL_GEMS
-    gem 'tbd', '= 3.4.1'
+    gem 'tbd', '= 3.4.2'
     gem 'osut', '= 0.5.0'
 
     # gem 'openstudio-standards', '= 0.6.0.rc1', :github => 'NREL/openstudio-standards', :ref => 'v0.6.0.rc1'
@@ -96,7 +96,7 @@ else
   gem 'oslg', '= 0.3.0'
 
   if !MINIMAL_GEMS
-    gem 'tbd', '= 3.4.1'
+    gem 'tbd', '= 3.4.2'
     gem 'osut', '= 0.5.0'
 
     gem 'openstudio-standards', '= 0.6.1'
