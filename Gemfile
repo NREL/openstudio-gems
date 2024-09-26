@@ -27,6 +27,8 @@ if !MINIMAL_GEMS
   gem 'regexp_parser', '2.9.0'
 end
 
+gem 'webrick', '~> 1.8.2'
+
 if LOCAL_DEV
 
   gem 'oslg', path: '../oslg'
