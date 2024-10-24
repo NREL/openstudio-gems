@@ -124,6 +124,7 @@ else
 end
 
 gem 'byebug', '~> 11.1.3'
+gem 'webrick', '~> 1.8.2'
 
 # leave this line in for now as we may try to get nokogiri to compile correctly on windows
 # gem 'nokogiri', '= 1.11.0.rc1.20200331222433', :github => 'jmarrec/nokogiri', :ref => 'MSVC_support' # master of 2020-03-31 + gemspec commit
