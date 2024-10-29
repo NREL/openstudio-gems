@@ -89,7 +89,7 @@ class StaticExtensionPlugin
         elsif extname.to_s == "sqlite3"
           extname = "sqlite3_native"
           extconf_args = ["--enable-system-libraries", "--with-pkg-config=pkgconf"]
-        elsif ['unfext', 'byebug', 'msgpack'].include?(extname.to_s)
+        elsif ['unfext', 'byebug', 'msgpack', 'strscan'].include?(extname.to_s)
           # No-op
         else
           puts "Warning: rubygems_plugin.post_install: no configuration given for extension_dir=#{extension_dir}"
