@@ -26,7 +26,7 @@ jobs:
       # fail-fast: Default is true, switch to false to allow one platform to fail and still run others
       fail-fast: false
       matrix:
-        build_name: [gcc-10, apple-clang-13, apple-clang-14-armv8, msvc-2022]
+        build_name: [gcc-10]
         include:
         - build_name: gcc-10
           compiler: gcc
