@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   # gem version is specified in gemspec, gem source/location (e.g. github branch) can be specified in Gemfile
   # runtime dependency versions can be loosened while in development on branches if needed
   # runtime dependency versions should be specified as exact versions when merged to master or develop
-  spec.add_dependency 'openstudio-extension', '0.8.0'
+  spec.add_dependency 'openstudio-extension', '0.8.1'
   spec.add_dependency 'openstudio-workflow', '2.4.0'
   spec.add_dependency 'openstudio_measure_tester', '~> 0.4.0'
 
