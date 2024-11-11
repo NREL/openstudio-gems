@@ -34,7 +34,7 @@ if LOCAL_DEV
     gem 'tbd', path: '../tbd'
     gem 'osut', path: '../osut'
     gem 'openstudio-standards', '= 0.7.0.rc1', path: '../openstudio-standards'
-    gem 'openstudio-extension', '= 0.8.1', path: '../openstudio-extension-gem'
+    gem 'openstudio-extension', '= 0.8.2', path: '../openstudio-extension-gem'
     gem 'openstudio-workflow', '= 2.4.0', path: '../OpenStudio-workflow-gem'
     gem 'openstudio_measure_tester', '= 0.4.0', path: "../OpenStudio-measure-tester-gem"
     gem 'bcl', path: '../bcl-gem'
@@ -65,7 +65,7 @@ elsif !FINAL_PACKAGE
     # gem 'openstudio_measure_tester', '= 0.4.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '89b9b7eb5f2d2ef91e225585a09e076577f25d4a'
     # gem 'bcl', "= 0.8.0", :github => 'NREL/bcl-gem', :ref => '3c60cadc781410819e7c9bfb8d7ba1af146d9abd'
     gem 'openstudio-standards', '= 0.7.0.rc1'
-    gem 'openstudio-extension', '= 0.8.1'
+    gem 'openstudio-extension', '= 0.8.2'
     gem 'openstudio-workflow', '= 2.4.0'
     gem 'openstudio_measure_tester', '= 0.4.0'
     gem 'bcl', "= 0.8.0"
@@ -100,7 +100,7 @@ else
     gem 'osut', '= 0.5.0'
 
     gem 'openstudio-standards', '= 0.7.0.rc1'
-    gem 'openstudio-extension', '= 0.8.1'
+    gem 'openstudio-extension', '= 0.8.2'
     gem 'openstudio-workflow', '= 2.4.0'
     gem 'openstudio_measure_tester', '= 0.4.0'
     gem 'bcl', "= 0.8.0"
