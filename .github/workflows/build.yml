@@ -45,7 +45,7 @@ jobs:
           compiler: apple-clang
           version: 14
           os: macos-14
-          SDKROOT: /Applications/Xcode_14.3.1.app
+          SDKROOT: /Applications/Xcode_15.4.app
           allow_failure: false
         - build_name: msvc-2022
           compiler: msvc
@@ -87,7 +87,6 @@ jobs:
         echo CONAN_USER_HOME="$CONAN_USER_HOME" >> $GITHUB_ENV
         if [ "$RUNNER_OS" == "macOS" ]; then
           brew install md5sha1sum
-          ls -l /Applications
           sudo xcode-select -switch "${{ matrix.SDKROOT }}"
           clang --version
           sdk_path=$(xcrun --sdk macosx --show-sdk-path)
