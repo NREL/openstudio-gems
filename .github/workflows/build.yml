@@ -31,7 +31,7 @@ jobs:
         - build_name: gcc-10
           compiler: gcc
           version: 10
-          os: ubuntu-20.04
+          os: ubuntu-22.04
           # dockerImage: conanio/gcc10-ubuntu16.04:latest
           allow_failure: false
         - build_name: apple-clang-13
@@ -87,6 +87,7 @@ jobs:
         echo CONAN_USER_HOME="$CONAN_USER_HOME" >> $GITHUB_ENV
         if [ "$RUNNER_OS" == "macOS" ]; then
           brew install md5sha1sum
+          ls -l /Applications
           sudo xcode-select -switch "${{ matrix.SDKROOT }}"
           clang --version
           sdk_path=$(xcrun --sdk macosx --show-sdk-path)
@@ -114,7 +115,6 @@ jobs:
           if [ -x "$CC" ]; then
             echo "Ok, $CC exists"
           else
-            # Note: there is no gcc 12 on that ppa for Focal (20.04)
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt update -qq
             sudo apt install -y gcc-${{ matrix.version }} g++-${{ matrix.version }}
