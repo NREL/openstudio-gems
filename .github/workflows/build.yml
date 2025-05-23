@@ -31,21 +31,21 @@ jobs:
         - build_name: gcc-10
           compiler: gcc
           version: 10
-          os: ubuntu-20.04
+          os: ubuntu-22.04
           # dockerImage: conanio/gcc10-ubuntu16.04:latest
           allow_failure: false
         - build_name: apple-clang-13
           compiler: apple-clang
           version: 13
-          os: macos-12
+          os: macos-13
           arch: x86_64
-          SDKROOT: /Applications/Xcode_13.2.1.app
+          SDKROOT: /Applications/Xcode_14.3.1.app
           allow_failure: false
         - build_name: apple-clang-14-armv8
           compiler: apple-clang
           version: 14
           os: macos-14
-          SDKROOT: /Applications/Xcode_14.3.1.app
+          SDKROOT: /Applications/Xcode_15.4.app
           allow_failure: false
         - build_name: msvc-2022
           compiler: msvc
@@ -114,7 +114,6 @@ jobs:
           if [ -x "$CC" ]; then
             echo "Ok, $CC exists"
           else
-            # Note: there is no gcc 12 on that ppa for Focal (20.04)
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt update -qq
             sudo apt install -y gcc-${{ matrix.version }} g++-${{ matrix.version }}
