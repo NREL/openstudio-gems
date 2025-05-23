@@ -34,10 +34,10 @@ if LOCAL_DEV
     gem 'tbd', path: '../tbd'
     gem 'osut', path: '../osut'
     gem 'openstudio-standards', '= 0.8.0.rc2', path: '../openstudio-standards'
-    gem 'openstudio-extension', '= 0.8.3', path: '../openstudio-extension-gem'
-    gem 'openstudio-workflow', '= 2.4.0', path: '../OpenStudio-workflow-gem'
-    gem 'openstudio_measure_tester', '= 0.4.1', path: "../OpenStudio-measure-tester-gem"
-    gem 'bcl', '= 0.8.0', path: '../bcl-gem'
+    gem 'openstudio-extension', '= 0.9.0', path: '../openstudio-extension-gem'
+    gem 'openstudio-workflow', '= 2.5.0', path: '../OpenStudio-workflow-gem'
+    gem 'openstudio_measure_tester', '= 0.5.0', path: "../OpenStudio-measure-tester-gem"
+    gem 'bcl', '= 0.9.0', path: '../bcl-gem'
   end
 
   group :native_ext do
@@ -62,14 +62,14 @@ elsif !FINAL_PACKAGE
 
     # gem 'openstudio-standards', '= 0.6.0.rc1', :github => 'NREL/openstudio-standards', :ref => 'v0.6.0.rc1'
     # gem 'openstudio-extension', '= 0.8.0',:github => 'NREL/openstudio-extension-gem', :ref => '2e86077dce1688443cca462feda3239ef47c232c'
-    # gem 'openstudio-workflow', '= 2.4.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => '32126e9b9f6bd6ed1ee55331f6dadbb3ba1e7cd2'
+    # gem 'openstudio-workflow', '= 2.5.0', :github => 'NREL/OpenStudio-workflow-gem', :ref => '32126e9b9f6bd6ed1ee55331f6dadbb3ba1e7cd2'
     # gem 'openstudio_measure_tester', '= 0.4.0', :github => 'NREL/OpenStudio-measure-tester-gem', :ref => '89b9b7eb5f2d2ef91e225585a09e076577f25d4a'
     # gem 'bcl', "= 0.8.0", :github => 'NREL/bcl-gem', :ref => '3c60cadc781410819e7c9bfb8d7ba1af146d9abd'
     gem 'openstudio-standards', '= 0.8.0.rc2'
-    gem 'openstudio-extension', '= 0.8.3'
-    gem 'openstudio-workflow', '= 2.4.0'
-    gem 'openstudio_measure_tester', '= 0.4.1'
-    gem 'bcl', "= 0.8.0"
+    gem 'openstudio-extension', '= 0.9.0'
+    gem 'openstudio-workflow', '= 2.5.0'
+    gem 'openstudio_measure_tester', '= 0.5.0'
+    gem 'bcl', "= 0.9.0"
 
     # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
     # itself already has json 2.6.2 which is good enough
@@ -102,10 +102,10 @@ else
     gem 'osut', '= 0.6.0'
 
     gem 'openstudio-standards', '= 0.8.0.rc2'
-    gem 'openstudio-extension', '= 0.8.3'
-    gem 'openstudio-workflow', '= 2.4.0'
-    gem 'openstudio_measure_tester', '= 0.4.1'
-    gem 'bcl', "= 0.8.0"
+    gem 'openstudio-extension', '= 0.9.0'
+    gem 'openstudio-workflow', '= 2.5.0'
+    gem 'openstudio_measure_tester', '= 0.5.0'
+    gem 'bcl', "= 0.9.0"
   end
 
   group :native_ext do
@@ -118,7 +118,7 @@ else
 
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
       # 'oga' was chosen as the parser because 'nokogiri' is not supported on windows
-      gem 'oga', '3.2'
+how to       gem 'oga', '3.2'
       # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
       gem 'msgpack', '1.7.2'
     end
