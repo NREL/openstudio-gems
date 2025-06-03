@@ -38,6 +38,10 @@ if LOCAL_DEV
     gem 'openstudio-workflow', '= 2.5.0', path: '../OpenStudio-workflow-gem'
     gem 'openstudio_measure_tester', '= 0.5.0', path: "../OpenStudio-measure-tester-gem"
     gem 'bcl', '= 0.9.0', path: '../bcl-gem'
+
+    # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
+    # itself already has json 2.6.2 which is good enough
+    gem 'rubocop', :github => 'jmarrec/rubocop', :ref => '1.50.0-no_json'
   end
 
   group :native_ext do
@@ -106,6 +110,10 @@ else
     gem 'openstudio-workflow', '= 2.5.0'
     gem 'openstudio_measure_tester', '= 0.5.0'
     gem 'bcl', "= 0.9.0"
+
+    # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
+    # itself already has json 2.6.2 which is good enough
+    gem 'rubocop', :github => 'jmarrec/rubocop', :ref => '1.50.0-no_json'
   end
 
   group :native_ext do
