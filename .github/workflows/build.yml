@@ -26,7 +26,7 @@ jobs:
       # fail-fast: Default is true, switch to false to allow one platform to fail and still run others
       fail-fast: false
       matrix:
-        build_name: [gcc-10, apple-clang-13, apple-clang-14-armv8, msvc-2022]
+        build_name: [gcc-10, apple-clang-13, apple-clang-14-armv8, msvc-2022, gcc-10-arm64]
         include:
         - build_name: gcc-10
           compiler: gcc
@@ -52,6 +52,12 @@ jobs:
           version: 194
           os: windows-2022
           allow_failure: false
+        - build_name: gcc-10-arm64
+          compiler: gcc
+          version: 10
+          os: ubuntu-22.04-arm
+          # dockerImage: conanio/gcc10-ubuntu16.04:latest
+          allow_failure: true
 
     steps:
     - uses: actions/checkout@v4
