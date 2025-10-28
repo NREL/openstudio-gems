@@ -2,7 +2,7 @@ $static = true
 
 Gem::Specification.new do |spec|
   spec.name          = 'openstudio-gems'
-  spec.version       = '3.10.0'
+  spec.version       = '3.11.0'
   spec.authors       = ['Nicholas Long', 'Dan Macumber', 'Katherine Fleming']
   spec.email         = ['nicholas.long@nrel.gov', 'daniel.macumber@nrel.gov', 'katherine.fleming@nrel.gov']
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   # gem version is specified in gemspec, gem source/location (e.g. github branch) can be specified in Gemfile
   # runtime dependency versions can be loosened while in development on branches if needed
   # runtime dependency versions should be specified as exact versions when merged to master or develop
-  spec.add_dependency 'openstudio-extension', '0.9.1'
+  spec.add_dependency 'openstudio-extension', '0.9.4'
   spec.add_dependency 'openstudio-workflow', '2.5.0'
   spec.add_dependency 'openstudio_measure_tester', '~> 0.5.0'
 
