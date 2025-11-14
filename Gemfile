@@ -58,11 +58,11 @@ if LOCAL_DEV
 
 elsif !FINAL_PACKAGE
 
-  gem 'oslg', '= 0.3.0'
+  gem 'oslg', '= 0.4.0'
 
   if !MINIMAL_GEMS
-    gem 'tbd', '~> 3.4.4'
-    gem 'osut', '= 0.6.0'
+    gem 'tbd', '~> 3.5.0'
+    gem 'osut', '= 0.8.0'
 
     # gem 'openstudio-standards', '= 0.8.2.rc1', :github => 'NREL/openstudio-standards', :ref => 'v0.8.2.rc1'
     # gem 'openstudio-extension', '= 0.8.0',:github => 'NREL/openstudio-extension-gem', :ref => '2e86077dce1688443cca462feda3239ef47c232c'
@@ -99,11 +99,11 @@ else
 
   puts "FINAL_PACKAGE"
 
-  gem 'oslg', '= 0.3.0'
+  gem 'oslg', '= 0.4.0'
 
   if !MINIMAL_GEMS
-    gem 'tbd', '= 3.4.4'
-    gem 'osut', '= 0.6.0'
+    gem 'tbd', '= 3.5.0'
+    gem 'osut', '= 0.8.0'
 
     gem 'openstudio-standards', '= 0.8.4'
     gem 'openstudio-extension', '= 0.9.4'
