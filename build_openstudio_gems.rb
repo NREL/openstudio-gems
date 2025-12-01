@@ -101,6 +101,26 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   #   and all is _well_
   system_call("#{bundle_cmd} cache --no-install") # No need for "--all" conanfile sets BUNDLE_CACHE_ALL, and specifying it prints an annoying warning
 
+  # Unpack jaro_winkler so we can patch it
+  Dir.glob('vendor/cache/jaro_winkler*.gem').each do |gem_file|
+    puts "Unpacking #{gem_file} for patching"
+    # Unpack gem source
+    system_call("gem unpack #{gem_file} --target vendor/cache")
+
+    # Get the directory name (it's usually gem_name-version)
+    basename = File.basename(gem_file, '.gem')
+    unpack_dir = File.join('vendor/cache', basename)
+
+    # Extract gemspec
+    gemspec_path = File.join(unpack_dir, 'jaro_winkler.gemspec')
+    # Use --ruby flag to get the gemspec in ruby format
+    system_call("gem spec #{gem_file} --ruby > \"#{gemspec_path}\"")
+
+    # Remove the original .gem file so we don't have duplicates
+    # The rebuild process will create a new .gem file and move it back to vendor/cache
+    FileUtils.rm(gem_file)
+  end
+
   Dir.glob('vendor/cache/*').select { |x| File.directory?(x) }.each do |d|
     gemspec = nil
     gemspec = 'jaro_winkler.gemspec' if d.include?('jaro_winkler')
