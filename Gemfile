@@ -46,6 +46,7 @@ if LOCAL_DEV
 
   group :native_ext do
     gem 'jaro_winkler', '= 1.6.1'
+    gem 'json', '~> 2.6.3'
     unless MINIMAL_GEMS
       gem 'sqlite3', '= 2.8.1'
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
@@ -80,6 +81,7 @@ elsif !FINAL_PACKAGE
 
   group :native_ext do
     gem 'jaro_winkler', '= 1.6.1'
+    gem 'json', '~> 2.6.3'
 
     unless MINIMAL_GEMS
       # gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
@@ -114,6 +116,7 @@ else
 
   group :native_ext do
     gem 'jaro_winkler', '= 1.6.1'
+    gem 'json', '~> 2.6.3'
 
     unless MINIMAL_GEMS
       # gem 'sqlite3'

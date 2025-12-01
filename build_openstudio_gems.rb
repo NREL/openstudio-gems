@@ -189,6 +189,8 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   system_call("#{bundle_cmd} install --local --no-cache", true)
   puts '=' * 80
 
+  system_call("#{bundle_cmd} exec ruby -e \"require 'json'; puts 'JSON loaded successfully'\"")
+
   lib_ext = RbConfig::CONFIG['LIBEXT']
   libs = Dir.glob("./openstudio-gems/**/*.#{lib_ext}")
   lib_names_woext = Set.new(libs.map { |lib| File.basename(lib, File.extname(lib)) })
