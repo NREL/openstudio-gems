@@ -131,7 +131,7 @@ jobs:
         echo "is_conan2=true" >> "$GITHUB_OUTPUT"
         CONAN_PROFILE_DEFAULT="$CONAN_HOME${DIR_SEP}profiles${DIR_SEP}default"
 
-        conan profile detect --force --name default --settings compiler.cppstd=20
+        conan profile detect --force --name default
         conan profile path default
         cat "$CONAN_PROFILE_DEFAULT"
         conan profile show
