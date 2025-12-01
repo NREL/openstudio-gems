@@ -105,6 +105,56 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
     gemspec = nil
     gemspec = 'jaro_winkler.gemspec' if d.include?('jaro_winkler')
 
+    if d.include?('jaro_winkler')
+      puts "Patching jaro_winkler in #{d}"
+      jaro_c_path = File.join(d, 'ext', 'jaro_winkler', 'jaro.c')
+      if File.exist?(jaro_c_path)
+        content = File.read(jaro_c_path)
+
+        # Replace VLA with calloc
+        if content.gsub!(/char short_codes_flag\[len1\];/,
+                         'char *short_codes_flag = (char *)calloc(len1, sizeof(char));')
+          puts 'Patched short_codes_flag declaration'
+        else
+          puts 'Failed to patch short_codes_flag declaration'
+        end
+
+        if content.gsub!(/char long_codes_flag\[len2\];/, 'char *long_codes_flag = (char *)calloc(len2, sizeof(char));')
+          puts 'Patched long_codes_flag declaration'
+        else
+          puts 'Failed to patch long_codes_flag declaration'
+        end
+
+        # Remove memset as calloc initializes to 0
+        content.gsub!(/memset\(short_codes_flag, 0, len1\);/, '// memset(short_codes_flag, 0, len1);')
+        content.gsub!(/memset\(long_codes_flag, 0, len2\);/, '// memset(long_codes_flag, 0, len2);')
+
+        # Add free before returns
+        # There are two returns after allocation
+
+        # 1. if (!match_count) return 0.0;
+        if content.gsub!(/if \(!match_count\)\s+return 0.0;/,
+                         "if (!match_count) {\n    free(short_codes_flag);\n    free(long_codes_flag);\n    return 0.0;\n  }")
+          puts 'Patched return 0.0'
+        else
+          puts 'Failed to patch return 0.0'
+        end
+
+        # 2. Final return
+        # return (m / len1 + m / len2 + (m - t) / m) / 3;
+        if content.gsub!(%r{return \(m / len1 \+ m / len2 \+ \(m - t\) / m\) / 3;},
+                         "free(short_codes_flag);\n  free(long_codes_flag);\n  return (m / len1 + m / len2 + (m - t) / m) / 3;")
+          puts 'Patched final return'
+        else
+          puts 'Failed to patch final return'
+        end
+
+        File.write(jaro_c_path, content)
+      else
+        puts "Could not find jaro.c at #{jaro_c_path}"
+      end
+    end
+
     Dir.chdir(d) do
       system("gem build #{gemspec}")
       Dir.glob('*.gem').each { |x| FileUtils.move(x, '..') }
