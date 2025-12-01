@@ -1,3 +1,5 @@
+require 'tmpdir'
+require 'tempfile'
 
 class StaticExtensionPlugin
 
@@ -6,6 +8,7 @@ class StaticExtensionPlugin
 
     @dir =  __dir__
     @install_dir = File.expand_path(@dir + "/../openstudio-gems")
+    puts "@dir=#{@dir}"
     @exports_file_name = @dir + "/../openstudio-gems/export-extensions.cmake"
     @ext_init_file_name = @dir + "/../openstudio-gems/ext-init.hpp"
 
@@ -21,30 +24,35 @@ class StaticExtensionPlugin
   end
 
   def self.make_static(dest_path, results)
-    unless File.exist? 'Makefile' then
+    unless File.exist? "#{File.join(dest_path, 'Makefile')}" then
       raise Gem::InstallError, 'Makefile not found'
     end
 
     # try to find make program from Ruby configure arguments first
-    RbConfig::CONFIG['configure_args'] =~ /with-make-prog\=(\w+)/
-    make_program = ENV['MAKE'] || ENV['make'] || $1
-    unless make_program then
-      make_program = (/mswin/ =~ RUBY_PLATFORM) ? 'nmake' : 'make'
-    end
+    # try to find make program from Ruby configure arguments first
+    RbConfig::CONFIG["configure_args"] =~ /with-make-prog\=(\w+)/
+    make_program_name = ENV["MAKE"] || ENV["make"] || $1
+    make_program_name ||= RUBY_PLATFORM.include?("mswin") ? "nmake" : "make"
+    make_program = Shellwords.split(make_program_name)
 
-    destdir = '"DESTDIR=%s"' % ENV['DESTDIR'] if RUBY_VERSION > '2.0'
+    # The installation of the bundled gems is failed when DESTDIR is empty in mswin platform.
+    destdir = /\bnmake/i !~ make_program_name || ENV["DESTDIR"] && ENV["DESTDIR"] != "" ? format("DESTDIR=%s", ENV["DESTDIR"]) : ""
+    env = [destdir]
 
     ['static'].each do |target|
       # Pass DESTDIR via command line to override what's in MAKEFLAGS
       cmd = [
-        make_program,
-        destdir,
+        *make_program,
+        *env,
         target
-      ].join(' ').rstrip
+      ].reject(&:empty?)
       begin
-        Gem::Ext::Builder.run(cmd, results, "make #{target}".rstrip)
+        Gem::Ext::Builder.run(cmd, results, "make #{target}".rstrip, dest_path)
       rescue Gem::InstallError
         raise unless target == 'clean' # ignore clean failure
+      ensure
+        puts "make results:"
+        puts results.join("\n").strip
       end
     end
   end
@@ -70,59 +78,78 @@ class StaticExtensionPlugin
         # Work-around for native gems with non-standard library names
         # Glob `#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}` won't work
         # because when this is set, the file doesn't exist yet.
+        extconf_args = []
 
-	if extension_dir.to_s.include? "oga"
-	  extname = "liboga" 
-	elsif extension_dir.to_s.include? "ruby-ll"
-	  extname = "libll" 
-	elsif extname.to_s == "jaro_winkler"
+        if extension_dir.to_s.include? "oga"
+          extname = "liboga"
+        elsif extension_dir.to_s.include? "ruby-ll"
+          extname = "libll"
+        elsif extname.to_s == "jaro_winkler"
           extname = "jaro_winkler_ext"
         elsif extname.to_s == "sqlite3"
           extname = "sqlite3_native"
-        elsif extname.to_s == "oga"
-          extname = "liboga"
+          extconf_args = ["--enable-system-libraries", "--with-pkg-config=pkgconf"]
+        elsif ['unfext', 'byebug', 'msgpack'].include?(extname.to_s)
+          # No-op
+        else
+          puts "Warning: rubygems_plugin.post_install: no configuration given for extension_dir=#{extension_dir}"
         end
 
+        puts "extension=#{extension}, extname=#{extname}"
+        puts "installer.spec.full_gem_path=#{installer.spec.full_gem_path}"
+        puts "extension_dir=#{extension_dir}, @install_dir=#{@install_dir}"
         lib_path = "#{extension_dir.sub(@install_dir, "")}/#{extname}.#{RbConfig::MAKEFILE_CONFIG['LIBEXT']}"
         target_name = "ruby-ext-#{extname}"
 
+        # enable Gem.configure.really_verbose
+        # Gem.configuration.verbose = 10
 
         tmp_dest = Dir.mktmpdir(".gem.", ".")
+        puts "tmp_dest=#{tmp_dest}"
+        puts "extension_dir=#{extension_dir}"
 
-        Dir.chdir extension_dir do
-          Tempfile.open %w"siteconf .rb", "." do |siteconf|
-            siteconf.puts "require 'mkmf'"
-            siteconf.puts "$static = true"
-            siteconf.puts "require 'rbconfig'"
-            siteconf.puts "dest_path = #{tmp_dest.dump}"
-            %w[sitearchdir sitelibdir].each do |dir|
-              siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
-              siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
-            end
-
-            siteconf.close
-
-            cmd = [Gem.ruby, "-r", StaticExtensionPlugin.get_relative_path(siteconf.path), File.basename(extension)].join ' '
-            results = []
-
-            begin
-              Gem::Ext::Builder.run cmd, results
-            ensure
-              if File.exist? 'mkmf.log'
-                unless $?.success? then
-                  results << "To see why this extension failed to compile, please check" \
-                    " the mkmf.log which can be found here:\n"
-                  results << "  " + File.join(tmp_dest, 'mkmf.log') + "\n"
-                end
-                FileUtils.mv 'mkmf.log', tmp_dest
-              end
-              siteconf.unlink
-            end
-
-            StaticExtensionPlugin.make_static extension_dir, results
-
+        siteconf_path = "#{extension_dir}/siteconf.rb"
+        File.open(siteconf_path, "w") do |siteconf|
+        # Tempfile.open %w"siteconf .rb", extension_dir do |siteconf|
+          siteconf.puts "require 'mkmf'"
+          siteconf.puts "$static = true"
+          # Add CFLAGS and CXXFLAGS for warning suppression
+          siteconf.puts "$CFLAGS += ENV['CFLAGS'] if ENV['CFLAGS']"
+          siteconf.puts "$CXXFLAGS += ENV['CXXFLAGS'] if ENV['CXXFLAGS']"
+          # This is missing fPIC
+          if extname == 'unf_ext' and RbConfig::CONFIG['host_os'] =~ /linux/
+            siteconf.puts "$CPPFLAGS << ' ' << '-fPIC'"
+          end
+          siteconf.puts "require 'rbconfig'"
+          siteconf.puts "dest_path = #{File.absolute_path(tmp_dest).dump}"
+          %w[sitearchdir sitelibdir].each do |dir|
+            siteconf.puts "RbConfig::MAKEFILE_CONFIG['#{dir}'] = dest_path"
+            siteconf.puts "RbConfig::CONFIG['#{dir}'] = dest_path"
           end
         end
+
+        cmd = [Gem.ruby, "-r", "./siteconf.rb", File.basename(extension), *extconf_args]
+        puts "cmd=#{cmd}"
+
+        results = []
+        begin
+          Gem::Ext::Builder.run cmd, results, "Building #{extension}", extension_dir
+        ensure
+          if File.exist? File.join(extension_dir, 'mkmf.log')
+            unless $?.nil? || $?.success? then
+              results << "To see why this extension failed to compile, please check" \
+                " the mkmf.log which can be found here:\n"
+              results << "  " + File.join(tmp_dest, 'mkmf.log') + "\n"
+              raise results.join("\n").strip
+            end
+            puts "results:"
+            puts results.join("\n").strip
+            FileUtils.mv File.join(extension_dir, 'mkmf.log'), tmp_dest
+          end
+          File.delete(siteconf_path) if File.exist? siteconf_path
+        end
+
+        StaticExtensionPlugin.make_static extension_dir, results
 
         File.open(@ext_init_file_name, "a") do |f|
           f.puts "extern \"C\" {"
@@ -150,4 +177,3 @@ class StaticExtensionPlugin
 end
 
 StaticExtensionPlugin.new
-

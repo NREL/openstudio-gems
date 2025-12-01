@@ -1,0 +1,269 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, develop, ruby3 ]
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  VERIFY_SSL: true
+
+jobs:
+  build:
+
+    name: "${{ matrix.build_name }}"
+
+    # Note: as of 2021-01-29, this only works for push, not for pull request
+    # if: "!(contains(github.event.head_commit.message, 'skip') && contains(github.event.head_commit.message, 'ci'))"
+    # runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.allow_failure }}
+    strategy:
+      # fail-fast: Default is true, switch to false to allow one platform to fail and still run others
+      fail-fast: false
+      matrix:
+        build_name: [gcc-10, apple-clang-13, apple-clang-14-armv8, msvc-2022, gcc-10-arm64]
+        include:
+        - build_name: gcc-10
+          compiler: gcc
+          version: 10
+          os: ubuntu-22.04
+          # dockerImage: conanio/gcc10-ubuntu16.04:latest
+          allow_failure: false
+        - build_name: apple-clang-13
+          compiler: apple-clang
+          version: 13
+          os: macos-13
+          arch: x86_64
+          SDKROOT: /Applications/Xcode_14.3.1.app
+          allow_failure: false
+        - build_name: apple-clang-14-armv8
+          compiler: apple-clang
+          version: 14
+          os: macos-14
+          SDKROOT: /Applications/Xcode_15.4.app
+          allow_failure: false
+        - build_name: msvc-2022
+          compiler: msvc
+          version: 194
+          os: windows-2022
+          allow_failure: false
+        - build_name: gcc-10-arm64
+          compiler: gcc
+          version: 10
+          os: ubuntu-22.04-arm
+          # dockerImage: conanio/gcc10-ubuntu16.04:latest
+          allow_failure: true
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: "0"
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - uses: ruby/setup-ruby@v1
+      if: runner.os != 'Windows'
+      with:
+        ruby-version: '3.2.2'
+
+    - name: Setup Conan
+      id: setup-conan
+      shell: bash
+      run: |
+        set -x
+        pip install conan==2.3.2
+
+        conan --version
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          DIR_SEP="\\"
+        else
+          DIR_SEP="/"
+        fi
+
+        # Set CONAN_USER_HOME and create its cache directories
+        export CONAN_USER_HOME="${{ github.workspace }}${DIR_SEP}conan-cache"
+        mkdir -p "${{ github.workspace }}${DIR_SEP}conan-cache/.conan-download-cache"
+        mkdir -p "${{ github.workspace }}${DIR_SEP}conan-cache/short"
+
+        echo "CONAN_MAJOR_VERSION=$CONAN_MAJOR_VERSION" >> "$GITHUB_OUTPUT"
+        echo "CONAN_USER_HOME=$CONAN_USER_HOME" >> "$GITHUB_OUTPUT"
+        echo CONAN_USER_HOME="$CONAN_USER_HOME" >> $GITHUB_ENV
+
+        # Set CONAN_HOME and create its cache directories
+        export CONAN_HOME="$CONAN_USER_HOME${DIR_SEP}.conan2"
+        mkdir -p "$CONAN_HOME/p"
+        mkdir -p "$CONAN_HOME/data"
+
+        # OS-specific setup for compiler and SDK
+        if [ "$RUNNER_OS" == "macOS" ]; then
+          brew install md5sha1sum
+          sudo xcode-select -switch "${{ matrix.SDKROOT }}"
+          clang --version
+          sdk_path=$(xcrun --sdk macosx --show-sdk-path)
+          echo "sdk_path=$sdk_path" >> $GITHUB_ENV
+          python -c "import os; print(os.path.realpath('$sdk_path'))"
+
+          brew --prefix
+          rm -Rf "$(brew --prefix)/lib/pkgconfig/libcrypto.pc"
+          rm -Rf "$(brew --prefix)/lib/pkgconfig/libssl.pc"
+          rm -Rf "$(brew --prefix)/lib/pkgconfig/openssl.pc"
+
+        elif [ "${{ matrix.compiler }}" = "gcc" ]; then
+          CC="/usr/bin/gcc-${{ matrix.version }}"
+          if [ -x "$CC" ]; then
+            echo "Ok, $CC exists"
+          else
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt update -qq
+            sudo apt install -y "gcc-${{ matrix.version }}" "g++-${{ matrix.version }}"
+          fi
+          sudo update-alternatives --install /usr/bin/gcc gcc "$CC" 100 --slave /usr/bin/g++ g++ "/usr/bin/g++-${{ matrix.version }}" --slave /usr/bin/gcov gcov "/usr/bin/gcov-${{ matrix.version }}" --slave /usr/bin/gfortran gfortran "/usr/bin/gfortran-${{ matrix.version }}"
+          gcc --version
+        fi
+
+        echo "is_conan2=true" >> "$GITHUB_OUTPUT"
+        CONAN_PROFILE_DEFAULT="$CONAN_HOME${DIR_SEP}profiles${DIR_SEP}default"
+
+        conan profile detect --force --name default
+        conan profile path default
+        cat "$CONAN_PROFILE_DEFAULT"
+        conan profile show
+
+        echo "core:non_interactive = True" >> "$CONAN_HOME/global.conf"
+        echo "core.download:parallel = {{os.cpu_count() - 2}}" >> "$CONAN_HOME/global.conf"
+        echo "core.sources:download_cache = $CONAN_USER_HOME/.conan-download-cache" >> "$CONAN_HOME/global.conf"
+        cat "$CONAN_HOME/global.conf"
+
+        echo CONAN_HOME="$CONAN_HOME" >> $GITHUB_ENV
+        echo CONAN_PROFILE_DEFAULT="$CONAN_PROFILE_DEFAULT" >> $GITHUB_ENV
+
+        # Export CFLAGS and CXXFLAGS for warning suppression
+        export CFLAGS="-Wno-strict-prototypes -Wno-shorten-64-to-32 -Wno-unused-variable"
+        export CXXFLAGS="-Wno-strict-prototypes -Wno-shorten-64-to-32 -Wno-unused-variable"
+
+        # Use lowercase based on repository owner
+        REPO_USERNAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+        echo "REPO_USERNAME=$REPO_USERNAME" >> $GITHUB_ENV
+
+        # Add Conan remote
+        if [[ "$VERIFY_SSL" == "false" ]]; then
+          conan remote add --force --insecure nrel-v2 http://conan.openstudio.net/artifactory/api/conan/conan-v2
+        else
+          conan remote add --force nrel-v2 https://conan.openstudio.net/artifactory/api/conan/conan-v2
+        fi
+        conan remote list
+
+    - name: Restore Conan Cache
+      uses: actions/cache/restore@v4
+      id: cacheconan-restore
+      with:
+        path: |
+          ${{ env.CONAN_USER_HOME }}/.conan-download-cache
+          ${{ env.CONAN_USER_HOME }}/short
+          ${{ env.CONAN_HOME }}/p
+          ${{ env.CONAN_HOME }}/data
+        key: conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-cachekey=${{ secrets.CACHE_KEY }}
+        restore-keys: |
+          conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-
+          conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-
+          conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-
+          conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-
+          conan-cache-${{ matrix.os }}-
+
+    - name: Did restoring the conan-cache work? Yes
+      if: steps.cacheconan-restore.outputs.cache-hit == 'true'
+      run: |
+        echo "Yes"
+
+    - name: Save Conan Cache
+      uses: actions/cache/save@v4
+      if: success()
+      with:
+        path: |
+          ${{ env.CONAN_USER_HOME }}/.conan-download-cache
+          ${{ env.CONAN_USER_HOME }}/short
+          ${{ env.CONAN_HOME }}/p
+          ${{ env.CONAN_HOME }}/data
+        key: conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-cachekey=${{ secrets.CACHE_KEY }}
+
+    - name: Build Unix
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        set -x
+        conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False'
+        . ../os-gems-deps/conanbuild.sh
+        ruby --version
+        sqlite3 --version
+        echo $PKG_CONFIG_PATH
+        gem install rake
+        rake make_package
+
+    - name: Build Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        # Set-PSDebug -Trace 1
+        # LongPathsEnabled is already the case for the runner: https://github.com/actions/runner-images/blob/13d5100df5e7d490b069f0e284dffbc8e321a756/images/windows/scripts/build/Configure-BaseImage.ps1#L73
+        # But git isn't
+        git config --system core.longpaths true
+        # As of 2024-02-13, this commit isn't in conan v2 https://github.com/conan-io/conan/commit/f2b56352f6f597981ccc053f9b7982029b942bf2
+        $vspath=$(vswhere -products '*' -requires Microsoft.Component.MSBuild -property installationPath -latest)
+        $devShellModule = "$vspath\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Import-Module $devShellModule
+        Enter-VsDevShell -VsInstallPath $vspath -SkipAutomaticLocation -Arch amd64
+        conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' -c tools.env.virtualenv:powershell=True
+        & ..\os-gems-deps\conanbuild.ps1
+        ruby --version
+        sqlite3 --version
+        echo $env:PKG_CONFIG_PATH
+        gem install rake
+        rake make_package
+
+    - name: Archive TGZ or ZIP artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: openstudio3-gems-${{ github.sha }}-${{ matrix.build_name }}.tar.gz
+        path: openstudio3-gems*.tar.gz
+
+    - name: Upload TGZ to release
+      if: contains(github.ref, 'refs/tags')
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: openstudio3-gems*.tar.gz
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
+
+    - name: Remove non-critical folders from the conan cache
+      shell: bash
+      if: ${{ contains(github.ref, 'refs/tags') || ((github.event_name == 'push' &&  github.ref == 'refs/heads/main')) }}
+      run: |
+        set -x
+        if [ "$CONAN_MAJOR_VERSION" == "1" ]; then
+          conan remove "*" --src --builds --system-reqs -f
+        else
+          conan cache clean --source --build --download --temp
+        fi
+
+
+  # Only trigger checksums if all builds succeded and it's a tag
+  trigger_cheksum:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger the Checksums workflow
+      if: contains(github.ref, 'refs/tags')
+      shell: bash
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh workflow -R ${{ github.repository }} run checksums.yml -f tag=${{ github.ref_name }}
