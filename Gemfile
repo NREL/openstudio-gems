@@ -17,7 +17,7 @@ FINAL_PACKAGE = !ENV['FINAL_PACKAGE'].nil?
 
 unless MINIMAL_GEMS
   # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
-  gem 'addressable', '= 2.8.8'
+  gem 'addressable', '= 2.8.1'
   # gem 'json_schemer', '= 2.0.0' # Disabled, see #72 and https://github.com/NREL/OpenStudio/issues/4969#issuecomment-1943418472
 end
 
