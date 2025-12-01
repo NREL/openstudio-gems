@@ -13,8 +13,8 @@ class GemsRecipe(ConanFile):
         if is_msvc(self):
             self.tool_requires("ruby/3.2.2")
         if not self.conf.get('tools.gnu:pkg_config', check_type=str):
-            self.tool_requires('pkgconf/2.1.0')
-        self.tool_requires("sqlite3/3.38.5")
+            self.tool_requires('pkgconf/2.2.0')
+        self.tool_requires("sqlite3/3.47.0")
 
     def generate(self):
         venv = VirtualBuildEnv(self)
