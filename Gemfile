@@ -29,15 +29,15 @@ end
 
 if LOCAL_DEV
 
-  gem 'oslg', '= 0.4.0'
+  gem 'oslg', path: '../oslg'
   unless MINIMAL_GEMS
-    gem 'bcl', '= 0.9.1'
-    gem 'openstudio-extension', path: '../openstudio-extension-gem'
-    gem 'openstudio_measure_tester', path: '../OpenStudio-measure-tester-gem'
-    gem 'openstudio-standards', '= 0.8.4'
-    gem 'openstudio-workflow', '= 2.5.0'
-    gem 'osut', '= 0.8.0'
-    gem 'tbd', '= 3.5.0'
+    gem 'bcl', path: '../bcl-gem'
+    gem 'openstudio-extension', '= 0.9.5', path: '../openstudio-extension-gem'
+    gem 'openstudio_measure_tester', '= 0.5.1', path: '../OpenStudio-measure-tester-gem'
+    gem 'openstudio-standards', '= 0.8.4', path: '../openstudio-standards'
+    gem 'openstudio-workflow', '= 2.5.0', path: '../OpenStudio-workflow-gem'
+    gem 'osut', path: '../osut'
+    gem 'tbd', path: '../tbd'
 
     # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
     # itself already has json 2.6.2 which is good enough

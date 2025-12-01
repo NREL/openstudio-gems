@@ -174,9 +174,9 @@ jobs:
         fi
         conan remote list
 
-    - name: Setup Conan Cache
-      uses: actions/cache@v4
-      id: cacheconan
+    - name: Restore Conan Cache
+      uses: actions/cache/restore@v4
+      id: cacheconan-restore
       with:
         path: |
           ${{ env.CONAN_USER_HOME }}/.conan-download-cache
@@ -190,12 +190,22 @@ jobs:
           conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-
           conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-
           conan-cache-${{ matrix.os }}-
-        save-always: ${{ matrix.compiler == 'msvc' }}
 
     - name: Did restoring the conan-cache work? Yes
-      if: steps.cacheconan.outputs.cache-hit == 'true'
+      if: steps.cacheconan-restore.outputs.cache-hit == 'true'
       run: |
         echo "Yes"
+
+    - name: Save Conan Cache
+      uses: actions/cache/save@v4
+      if: success()
+      with:
+        path: |
+          ${{ env.CONAN_USER_HOME }}/.conan-download-cache
+          ${{ env.CONAN_USER_HOME }}/short
+          ${{ env.CONAN_HOME }}/p
+          ${{ env.CONAN_HOME }}/data
+        key: conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-cachekey=${{ secrets.CACHE_KEY }}
 
     - name: Build Unix
       if: runner.os != 'Windows'
