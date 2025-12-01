@@ -45,14 +45,14 @@ if LOCAL_DEV
   end
 
   group :native_ext do
-    gem 'jaro_winkler', '= 1.6.1'
+    gem 'jaro_winkler', '= 1.5.6'
     unless MINIMAL_GEMS
       gem 'sqlite3', '= 2.8.1'
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
       # 'oga' was chosen as the parser because 'nokogiri' is not supported on windows
       gem 'oga', '3.4'
       # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
-      gem 'msgpack', '1.8.0'
+      gem 'msgpack', '1.7.2'
     end
   end
 
@@ -79,7 +79,7 @@ elsif !FINAL_PACKAGE
   end
 
   group :native_ext do
-    gem 'jaro_winkler', '= 1.6.1'
+    gem 'jaro_winkler', '= 1.5.6'
 
     unless MINIMAL_GEMS
       # gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
@@ -90,7 +90,7 @@ elsif !FINAL_PACKAGE
       # 'oga' was chosen as the parser because 'nokogiri' is not supported on windows
       gem 'oga', '3.4'
       # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
-      gem 'msgpack', '1.8.0'
+      gem 'msgpack', '1.7.2'
     end
   end
 else
@@ -113,7 +113,7 @@ else
   end
 
   group :native_ext do
-    gem 'jaro_winkler', '= 1.6.1'
+    gem 'jaro_winkler', '= 1.5.6'
 
     unless MINIMAL_GEMS
       # gem 'sqlite3'
@@ -124,7 +124,7 @@ else
       # 'oga' was chosen as the parser because 'nokogiri' is not supported on windows
       gem 'oga', '3.4'
       # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
-      gem 'msgpack', '1.8.0'
+      gem 'msgpack', '1.7.2'
     end
   end
 
