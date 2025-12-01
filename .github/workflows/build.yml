@@ -86,6 +86,8 @@ jobs:
         else
           DIR_SEP="/"
         fi
+
+        # Set CONAN_USER_HOME and create its cache directories
         export CONAN_USER_HOME="${{ github.workspace }}${DIR_SEP}conan-cache"
         mkdir -p "${{ github.workspace }}${DIR_SEP}conan-cache/.conan-download-cache"
         mkdir -p "${{ github.workspace }}${DIR_SEP}conan-cache/short"
@@ -93,91 +95,70 @@ jobs:
         echo "CONAN_MAJOR_VERSION=$CONAN_MAJOR_VERSION" >> "$GITHUB_OUTPUT"
         echo "CONAN_USER_HOME=$CONAN_USER_HOME" >> "$GITHUB_OUTPUT"
         echo CONAN_USER_HOME="$CONAN_USER_HOME" >> $GITHUB_ENV
-        export CONAN_HOME="$CONAN_USER_HOME${DIR_SEP}.conan2"
-        mkdir -p "${{ github.workspace }}${DIR_SEP}conan-cache/.conan2/p"
-        mkdir -p "${{ github.workspace }}${DIR_SEP}conan-cache/.conan2/data"
 
+        # Set CONAN_HOME and create its cache directories
+        export CONAN_HOME="$CONAN_USER_HOME${DIR_SEP}.conan2"
+        mkdir -p "$CONAN_HOME/p"
+        mkdir -p "$CONAN_HOME/data"
+
+        # OS-specific setup for compiler and SDK
+        if [ "$RUNNER_OS" == "macOS" ]; then
           brew install md5sha1sum
           sudo xcode-select -switch "${{ matrix.SDKROOT }}"
           clang --version
           sdk_path=$(xcrun --sdk macosx --show-sdk-path)
           echo "sdk_path=$sdk_path" >> $GITHUB_ENV
-          # These macs don't have the -f option... dunno if brew coreutils is isntalled... Just use python to read the symlink
-          # readlink -f $sdk_path
           python -c "import os; print(os.path.realpath('$sdk_path'))"
-          # maybe hardcode conf.tools.apple:sdk_path in profile?"
 
-          # The openssl@3 package installed on CI adds these files to the pkgconfig directory
-          # Remove them here so they aren't found instead of the version of OpenSSL built by Conan
-          # I should have fixed this, but better safe
           brew --prefix
-          rm -Rf $(brew --prefix)/lib/pkgconfig/libcrypto.pc
-          rm -Rf $(brew --prefix)/lib/pkgconfig/libssl.pc
-          rm -Rf $(brew --prefix)/lib/pkgconfig/openssl.pc
+          rm -Rf "$(brew --prefix)/lib/pkgconfig/libcrypto.pc"
+          rm -Rf "$(brew --prefix)/lib/pkgconfig/libssl.pc"
+          rm -Rf "$(brew --prefix)/lib/pkgconfig/openssl.pc"
 
         elif [ "${{ matrix.compiler }}" = "gcc" ]; then
-          CC=/usr/bin/gcc-${{ matrix.version }}
-          # echo "CC=/usr/bin/gcc-${{ matrix.version }}" >> $GITHUB_ENV
-          # echo "CXX=/usr/bin/g++-${{ matrix.version }}" >> $GITHUB_ENV
-          # echo "FC=/usr/bin/gfortran-${{ matrix.version }}" >> $GITHUB_ENV
-          # CONAN_PROFILE="gcc${{ matrix.version }}"
-
+          CC="/usr/bin/gcc-${{ matrix.version }}"
           if [ -x "$CC" ]; then
             echo "Ok, $CC exists"
           else
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt update -qq
-            sudo apt install -y gcc-${{ matrix.version }} g++-${{ matrix.version }}
-            # No need for gfortran-${{ matrix.version }}
+            sudo apt install -y "gcc-${{ matrix.version }}" "g++-${{ matrix.version }}"
           fi
-
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.version }} 100 --slave /usr/bin/g++ g++ /usr/bin/g++-${{ matrix.version }} --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ matrix.version }} --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${{ matrix.version }}
+          sudo update-alternatives --install /usr/bin/gcc gcc "$CC" 100 --slave /usr/bin/g++ g++ "/usr/bin/g++-${{ matrix.version }}" --slave /usr/bin/gcov gcov "/usr/bin/gcov-${{ matrix.version }}" --slave /usr/bin/gfortran gfortran "/usr/bin/gfortran-${{ matrix.version }}"
           gcc --version
         fi
 
         echo "is_conan2=true" >> "$GITHUB_OUTPUT"
-        export CONAN_HOME="$CONAN_USER_HOME${DIR_SEP}.conan2"
         CONAN_PROFILE_DEFAULT="$CONAN_HOME${DIR_SEP}profiles${DIR_SEP}default"
 
         conan profile detect --force --name default
         conan profile path default
-        cat $CONAN_PROFILE_DEFAULT
-        # Mac has the FreeBSD flavor of sed and MUST take a backup suffix...
-        sed -i.bak 's/cppstd=.*$/cppstd=20/g' $CONAN_PROFILE_DEFAULT
-        # if [ "${{ matrix.compiler}}" == "Visual Studio" ]; then
-        #   # Remove these
-        #   sed -i.bak '/cppstd=.*/d' $CONAN_PROFILE_DEFAULT
-        #   sed -i.bak '/compiler.runtime/d' $CONAN_PROFILE_DEFAULT
-        #   sed -i.bak '/compiler.version/d' $CONAN_PROFILE_DEFAULT
-        #   # Set to visual studio
-        #   sed -i.bak 's/compiler=.*$/compiler=${{ matrix.compiler }}/g' $CONAN_PROFILE_DEFAULT
-        #   sed -i.bak 's/compiler.version=.*$/compiler.version=${{ matrix.version }}/g' $CONAN_PROFILE_DEFAULT
-        # fi
-        rm -Rf $CONAN_PROFILE_DEFAULT.bak || true
+        cat "$CONAN_PROFILE_DEFAULT"
+        sed -i.bak 's/cppstd=.*$/cppstd=20/g' "$CONAN_PROFILE_DEFAULT"
+        rm -Rf "$CONAN_PROFILE_DEFAULT.bak" || true
         conan profile show
 
-        echo "core:non_interactive = True" >> $CONAN_HOME/global.conf
-        echo "core.download:parallel = {{os.cpu_count() - 2}}" >> $CONAN_HOME/global.conf
-        echo "core.sources:download_cache = $CONAN_USER_HOME/.conan-download-cache" >> $CONAN_HOME/global.conf
-        cat $CONAN_HOME/global.conf
+        echo "core:non_interactive = True" >> "$CONAN_HOME/global.conf"
+        echo "core.download:parallel = {{os.cpu_count() - 2}}" >> "$CONAN_HOME/global.conf"
+        echo "core.sources:download_cache = $CONAN_USER_HOME/.conan-download-cache" >> "$CONAN_HOME/global.conf"
+        cat "$CONAN_HOME/global.conf"
 
-        echo "CONAN_HOME=$CONAN_HOME" >> $GITHUB_ENV
+        echo CONAN_HOME="$CONAN_HOME" >> $GITHUB_ENV
         echo CONAN_PROFILE_DEFAULT="$CONAN_PROFILE_DEFAULT" >> $GITHUB_ENV
-        echo "CFLAGS=-Wno-strict-prototypes -Wno-shorten-64-to-32 -Wno-unused-variable" >> $GITHUB_ENV
-        echo "CXXFLAGS=-Wno-strict-prototypes -Wno-shorten-64-to-32 -Wno-unused-variable" >> $GITHUB_ENV
 
-        # Use lowercase based on repository owner, so that NREL -> nrel.
-        # That should work on forks, while not replacing 'nrel' with '***' everywhere like it does when you set CONAN_USERNAME as a repo secret...
-        # We want BPT/CPT to produces openstudio_ruby/2.7.2@<CONAN_USERNAME>/<channel>
-        # TODO: I actually do NOT want to set it now! so rename to REPO_USERNAME
+        # Export CFLAGS and CXXFLAGS for warning suppression
+        export CFLAGS="-Wno-strict-prototypes -Wno-shorten-64-to-32 -Wno-unused-variable"
+        export CXXFLAGS="-Wno-strict-prototypes -Wno-shorten-64-to-32 -Wno-unused-variable"
+
+        # Use lowercase based on repository owner
         REPO_USERNAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
         echo "REPO_USERNAME=$REPO_USERNAME" >> $GITHUB_ENV
 
-        # (Can't do that before we've se the CONAN_HOME / CONAN_USER_HOME)
+        # Add Conan remote
         if [[ "$VERIFY_SSL" == "false" ]]; then
-          conan remote add --force --insecure nrel-v2 http://conan.openstudio.net/artifactory/api/conan/conan-v2 # ${{ secrets.CONAN_UPLOAD }}
+          conan remote add --force --insecure nrel-v2 http://conan.openstudio.net/artifactory/api/conan/conan-v2
         else
-          conan remote add --force nrel-v2 https://conan.openstudio.net/artifactory/api/conan/conan-v2 # ${{ secrets.CONAN_UPLOAD }}
+          conan remote add --force nrel-v2 https://conan.openstudio.net/artifactory/api/conan/conan-v2
         fi
         conan remote list
 
