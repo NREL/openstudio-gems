@@ -189,10 +189,12 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
   system_call("#{bundle_cmd} install --local --no-cache", true)
   puts '=' * 80
 
+  raise 'JSON failed to load' unless system_call("#{bundle_cmd} exec ruby -e \"require 'json'; puts 'JSON loaded successfully'\"")
+
   lib_ext = RbConfig::CONFIG['LIBEXT']
   libs = Dir.glob("./openstudio-gems/**/*.#{lib_ext}")
   lib_names_woext = Set.new(libs.map { |lib| File.basename(lib, File.extname(lib)) })
-  expected = Set.new(%w[jaro_winkler_ext libll liboga msgpack byebug generator parser prism cparse]) # unf_ext: disabled with json_schemer
+  expected = Set.new(%w[jaro_winkler_ext libll liboga msgpack byebug prism cparse]) # unf_ext: disabled with json_schemer
   unless is_unix
     expected.add('sqlite3_native') # TODO: I don't understand why we don't have it yet...
   end

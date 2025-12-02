@@ -16,8 +16,8 @@ MINIMAL_GEMS = false # Keep only one non-native gem, and one native
 FINAL_PACKAGE = !ENV['FINAL_PACKAGE'].nil?
 
 unless MINIMAL_GEMS
-  # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
-  gem 'addressable', '= 2.8.8'
+  # Using addressable 2.8.1 due to urbanopt compatibility issues with later versions. See https://github.com/NREL/OpenStudio/issues/4870
+  gem 'addressable', '= 2.8.1'
   # gem 'json_schemer', '= 2.0.0' # Disabled, see #72 and https://github.com/NREL/OpenStudio/issues/4969#issuecomment-1943418472
 end
 
@@ -46,6 +46,7 @@ if LOCAL_DEV
 
   group :native_ext do
     gem 'jaro_winkler', '= 1.6.1'
+    gem 'json', '~> 2.6.3'
     unless MINIMAL_GEMS
       gem 'sqlite3', '= 2.8.1'
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
@@ -80,6 +81,7 @@ elsif !FINAL_PACKAGE
 
   group :native_ext do
     gem 'jaro_winkler', '= 1.6.1'
+    gem 'json', '~> 2.6.3'
 
     unless MINIMAL_GEMS
       # gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
@@ -114,6 +116,7 @@ else
 
   group :native_ext do
     gem 'jaro_winkler', '= 1.6.1'
+    gem 'json', '~> 2.6.3'
 
     unless MINIMAL_GEMS
       # gem 'sqlite3'
