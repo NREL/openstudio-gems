@@ -36,7 +36,7 @@ if LOCAL_DEV
     gem 'openstudio-standards', '= 0.8.4', path: '../openstudio-standards'
     gem 'openstudio-extension', '= 0.9.5', path: '../openstudio-extension-gem'
     gem 'openstudio-workflow', '= 2.5.0', path: '../OpenStudio-workflow-gem'
-    gem 'openstudio_measure_tester', '= 0.5.0', path: "../OpenStudio-measure-tester-gem"
+    gem 'openstudio_measure_tester', '= 0.5.1', path: "../OpenStudio-measure-tester-gem"
     gem 'bcl', '= 0.9.1', path: '../bcl-gem'
 
     # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
@@ -72,7 +72,7 @@ elsif !FINAL_PACKAGE
     gem 'openstudio-standards', '= 0.8.4', :github => 'NREL/openstudio-standards', :ref => 'master'
     gem 'openstudio-extension', '= 0.9.5'
     gem 'openstudio-workflow', '= 2.5.0'
-    gem 'openstudio_measure_tester', '= 0.5.0'
+    gem 'openstudio_measure_tester', '= 0.5.1'
     gem 'bcl', "= 0.9.1"
 
     # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
@@ -108,7 +108,7 @@ else
     gem 'openstudio-standards', '= 0.8.4'
     gem 'openstudio-extension', '= 0.9.5'
     gem 'openstudio-workflow', '= 2.5.0'
-    gem 'openstudio_measure_tester', '= 0.5.0'
+    gem 'openstudio_measure_tester', '= 0.5.1'
     gem 'bcl', "= 0.9.1"
 
     gem 'rubocop', '= 1.50.0'
