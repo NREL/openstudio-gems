@@ -3,7 +3,7 @@
 # gems listed here must be able to read resource files from the embedded files location
 # need to adjust hard coded paths in embedded_help.rb when adding new gems
 source 'http://rubygems.org'
-ruby "~> 3.2.2"
+ruby '~> 3.2.2'
 
 # Specify gem's dependencies in openstudio-gems.gemspec, this is what consumers of the gem will read
 gemspec
@@ -12,25 +12,25 @@ gemspec
 # This is needed if the version of the gem you want to use is not on rubygems
 
 LOCAL_DEV = false
-MINIMAL_GEMS = false   # Keep only one non-native gem, and one native
+MINIMAL_GEMS = false # Keep only one non-native gem, and one native
 FINAL_PACKAGE = !ENV['FINAL_PACKAGE'].nil?
 
-if !MINIMAL_GEMS
-  # Bug in addressable to 2.8.1 and patched version has an issue https://github.com/NREL/OpenStudio/issues/4870
+unless MINIMAL_GEMS
+  # Using addressable 2.8.1 due to urbanopt compatibility issues with later versions. See https://github.com/NREL/OpenStudio/issues/4870
   gem 'addressable', '= 2.8.1'
   # gem 'json_schemer', '= 2.0.0' # Disabled, see #72 and https://github.com/NREL/OpenStudio/issues/4969#issuecomment-1943418472
 end
 
-if !MINIMAL_GEMS
+unless MINIMAL_GEMS
   # 2.9.1 changed a bunch of require with require_relative and that's
   # apparently causing problems
-  gem 'regexp_parser', '2.9.0'
+  # gem 'regexp_parser', '2.11.2'
 end
 
 if LOCAL_DEV
 
   gem 'oslg', path: '../oslg'
-  if !MINIMAL_GEMS
+  unless MINIMAL_GEMS
     gem 'tbd', path: '../tbd'
     gem 'osut', path: '../osut'
     gem 'openstudio-standards', '= 0.8.4', path: '../openstudio-standards'
@@ -41,16 +41,16 @@ if LOCAL_DEV
 
     # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
     # itself already has json 2.6.2 which is good enough
-    gem 'rubocop', :github => 'jmarrec/rubocop', :ref => '1.50.0-no_json'
+    gem 'rubocop', '= 1.81.7'
   end
 
   group :native_ext do
     gem 'jaro_winkler',  path: '../ext/jaro_winkler'
-    if !MINIMAL_GEMS
-      gem 'sqlite3', path: '../ext/sqlite3-ruby'
+    gem 'json', '~> 2.6.3'
+    unless MINIMAL_GEMS
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
       # 'oga' was chosen as the parser because 'nokogiri' is not supported on windows
-      gem 'oga', '3.2'
+      gem 'oga', '3.4'
       # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
       gem 'msgpack', '1.7.2'
     end
@@ -60,7 +60,7 @@ elsif !FINAL_PACKAGE
 
   gem 'oslg', '= 0.4.0'
 
-  if !MINIMAL_GEMS
+  unless MINIMAL_GEMS
     gem 'tbd', '~> 3.5.0'
     gem 'osut', '= 0.8.0'
 
@@ -75,33 +75,32 @@ elsif !FINAL_PACKAGE
     gem 'openstudio_measure_tester', '= 0.5.1'
     gem 'bcl', "= 0.9.1"
 
-    # This removes the runtime dependency on 'json ~> 2.3'. Our CLI, via ruby
-    # itself already has json 2.6.2 which is good enough
-    gem 'rubocop', :github => 'jmarrec/rubocop', :ref => '1.50.0-no_json'
+    gem 'rubocop', '= 1.81.7'
   end
 
   group :native_ext do
-    gem 'jaro_winkler', '= 1.5.6', :github => 'jmarrec/jaro_winkler', :ref => 'msvc-ruby3'
+    gem 'jaro_winkler', '= 1.6.1'
+    gem 'json', '~> 2.6.3'
 
-    if !MINIMAL_GEMS
+    unless MINIMAL_GEMS
       # gem 'sqlite3', :github => 'jmarrec/sqlite3-ruby', :ref => 'MSVC_support'
       # gem 'sqlite3', :github => 'sparklemotion/sqlite3-ruby', :ref => "v1.7.2"
-      gem 'sqlite3', '= 1.7.2'
+      gem 'sqlite3', '= 2.8.1'
 
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
       # 'oga' was chosen as the parser because 'nokogiri' is not supported on windows
-      gem 'oga', '3.2'
+      gem 'oga', '3.4'
       # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
       gem 'msgpack', '1.7.2'
     end
   end
 else
 
-  puts "FINAL_PACKAGE"
+  puts 'FINAL_PACKAGE'
 
   gem 'oslg', '= 0.4.0'
 
-  if !MINIMAL_GEMS
+  unless MINIMAL_GEMS
     gem 'tbd', '= 3.5.0'
     gem 'osut', '= 0.8.0'
 
@@ -111,20 +110,21 @@ else
     gem 'openstudio_measure_tester', '= 0.5.1'
     gem 'bcl', "= 0.9.1"
 
-    gem 'rubocop', '= 1.50.0'
+    gem 'rubocop', '= 1.81.7'
   end
 
   group :native_ext do
-    gem 'jaro_winkler', '= 1.5.6'
+    gem 'jaro_winkler', '= 1.6.1'
+    gem 'json', '~> 2.6.3'
 
-    if !MINIMAL_GEMS
+    unless MINIMAL_GEMS
       # gem 'sqlite3'
       # gem 'sqlite3'
-      gem 'sqlite3', '= 1.7.2'
+      gem 'sqlite3', '= 2.8.1'
 
       # You need ragel available (version 6.x, eg `ragel_installer/6.10@bincrafters/stable` from conan)
       # 'oga' was chosen as the parser because 'nokogiri' is not supported on windows
-      gem 'oga', '3.2'
+      gem 'oga', '3.4'
       # gem 'cbor', '0.5.9.6' # Cbor will require a ton of patching, so disabling it in favor of msgpack (cbor is a fork of msgpack anyways)
       gem 'msgpack', '1.7.2'
     end
@@ -132,5 +132,5 @@ else
 
 end
 
-gem 'byebug', '~> 11.1.3'
-gem 'webrick', '~> 1.8.2'
+gem 'byebug', '~> 12.0.0'
+gem 'webrick', '~> 1.9.2'

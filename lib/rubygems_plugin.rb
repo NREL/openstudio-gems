@@ -113,6 +113,9 @@ class StaticExtensionPlugin
         # Tempfile.open %w"siteconf .rb", extension_dir do |siteconf|
           siteconf.puts "require 'mkmf'"
           siteconf.puts "$static = true"
+          # Add CFLAGS and CXXFLAGS for warning suppression
+          siteconf.puts "$CFLAGS += ENV['CFLAGS'] if ENV['CFLAGS']"
+          siteconf.puts "$CXXFLAGS += ENV['CXXFLAGS'] if ENV['CXXFLAGS']"
           # This is missing fPIC
           if extname == 'unf_ext' and RbConfig::CONFIG['host_os'] =~ /linux/
             siteconf.puts "$CPPFLAGS << ' ' << '-fPIC'"
