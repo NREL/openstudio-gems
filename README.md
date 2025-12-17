@@ -72,7 +72,7 @@ DATE=20230427 rake make_package
 * Release via github
 * run `rake release` from master
 
-# Recommandations for gem owners
+# Recommendations for gem owners
 
 * Gem owners are encouraged to start releasing pre/rc packages on rubygems. It would avoid several issues
     * Downloading from git is slow for large repositories

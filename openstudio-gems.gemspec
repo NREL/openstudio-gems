@@ -18,9 +18,9 @@ Gem::Specification.new do |spec|
   # gem version is specified in gemspec, gem source/location (e.g. github branch) can be specified in Gemfile
   # runtime dependency versions can be loosened while in development on branches if needed
   # runtime dependency versions should be specified as exact versions when merged to master or develop
-  spec.add_dependency 'openstudio-extension', '0.9.5'
+  spec.add_dependency 'openstudio-extension', '0.9.7'
   spec.add_dependency 'openstudio-workflow', '2.5.0'
-  spec.add_dependency 'openstudio_measure_tester', '~> 0.5.1'
+  spec.add_dependency 'openstudio_measure_tester', '~> 0.5.2'
 
   spec.add_dependency 'parallel', '~> 1.19.1'
 
@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   # bundle version is parsed by build_openstudio_gems.rb, specify all three numbers
   spec.add_development_dependency 'bundler', '~> 2.4.10'
   spec.add_development_dependency 'rake', '~> 13.2.1'
-  spec.add_development_dependency 'rubocop', '1.81.7'
+  spec.add_development_dependency 'rubocop', '1.50.0'
   spec.add_development_dependency 'rubocop-checkstyle_formatter', '0.6.0'
   spec.add_development_dependency 'rubocop-performance', '1.20.0'
   spec.add_development_dependency 'simplecov', '0.22.0'
