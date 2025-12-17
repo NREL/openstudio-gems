@@ -26,7 +26,7 @@ jobs:
       # fail-fast: Default is true, switch to false to allow one platform to fail and still run others
       fail-fast: false
       matrix:
-        build_name: [gcc-10, apple-clang-13, apple-clang-14-armv8, msvc-2022, gcc-10-arm64]
+        build_name: [gcc-10, apple-clang-15, apple-clang-14-armv8, msvc-2022, gcc-10-arm64]
         include:
         - build_name: gcc-10
           compiler: gcc
@@ -34,18 +34,17 @@ jobs:
           os: ubuntu-22.04
           # dockerImage: conanio/gcc10-ubuntu16.04:latest
           allow_failure: false
-        - build_name: apple-clang-13
+        - build_name: apple-clang-15
           compiler: apple-clang
-          version: 13
-          os: macos-13
-          arch: x86_64
-          SDKROOT: /Applications/Xcode_14.3.1.app
+          version: 15
+          os: macos-15-intel
+          xcode-version: "16"
           allow_failure: false
         - build_name: apple-clang-14-armv8
           compiler: apple-clang
           version: 14
           os: macos-14
-          SDKROOT: /Applications/Xcode_15.4.app
+          xcode-version: "15"
           allow_failure: false
         - build_name: msvc-2022
           compiler: msvc
@@ -73,6 +72,11 @@ jobs:
       with:
         ruby-version: '3.2.2'
 
+    - uses: maxim-lobanov/setup-xcode@v1
+      if: runner.os == 'macOS'
+      with:
+        xcode-version: ${{ matrix.xcode-version }}
+
     - name: Setup Conan
       id: setup-conan
       shell: bash
@@ -86,83 +90,94 @@ jobs:
         else
           DIR_SEP="/"
         fi
-
-        # Set CONAN_USER_HOME and create its cache directories
         export CONAN_USER_HOME="${{ github.workspace }}${DIR_SEP}conan-cache"
-        mkdir -p "${{ github.workspace }}${DIR_SEP}conan-cache/.conan-download-cache"
-        mkdir -p "${{ github.workspace }}${DIR_SEP}conan-cache/short"
 
-        echo "CONAN_MAJOR_VERSION=$CONAN_MAJOR_VERSION" >> "$GITHUB_OUTPUT"
+        # Conan is pinned to 2.x; set major version directly
+        echo "CONAN_MAJOR_VERSION=2" >> "$GITHUB_OUTPUT"
+        echo CONAN_MAJOR_VERSION="2" >> $GITHUB_ENV
         echo "CONAN_USER_HOME=$CONAN_USER_HOME" >> "$GITHUB_OUTPUT"
         echo CONAN_USER_HOME="$CONAN_USER_HOME" >> $GITHUB_ENV
-
-        # Set CONAN_HOME and create its cache directories
-        export CONAN_HOME="$CONAN_USER_HOME${DIR_SEP}.conan2"
-        mkdir -p "$CONAN_HOME/p"
-        mkdir -p "$CONAN_HOME/data"
-
-        # OS-specific setup for compiler and SDK
         if [ "$RUNNER_OS" == "macOS" ]; then
           brew install md5sha1sum
-          sudo xcode-select -switch "${{ matrix.SDKROOT }}"
-          clang --version
+          
           sdk_path=$(xcrun --sdk macosx --show-sdk-path)
           echo "sdk_path=$sdk_path" >> $GITHUB_ENV
           python -c "import os; print(os.path.realpath('$sdk_path'))"
 
+          # The openssl@3 package installed on CI adds these files to the pkgconfig directory
+          # Remove them here so they aren't found instead of the version of OpenSSL built by Conan
           brew --prefix
-          rm -Rf "$(brew --prefix)/lib/pkgconfig/libcrypto.pc"
-          rm -Rf "$(brew --prefix)/lib/pkgconfig/libssl.pc"
-          rm -Rf "$(brew --prefix)/lib/pkgconfig/openssl.pc"
+          rm -Rf $(brew --prefix)/lib/pkgconfig/libcrypto.pc
+          rm -Rf $(brew --prefix)/lib/pkgconfig/libssl.pc
+          rm -Rf $(brew --prefix)/lib/pkgconfig/openssl.pc
 
         elif [ "${{ matrix.compiler }}" = "gcc" ]; then
-          CC="/usr/bin/gcc-${{ matrix.version }}"
+          CC=/usr/bin/gcc-${{ matrix.version }}
+          # echo "CC=/usr/bin/gcc-${{ matrix.version }}" >> $GITHUB_ENV
+          # echo "CXX=/usr/bin/g++-${{ matrix.version }}" >> $GITHUB_ENV
+          # echo "FC=/usr/bin/gfortran-${{ matrix.version }}" >> $GITHUB_ENV
+          # CONAN_PROFILE="gcc${{ matrix.version }}"
+
           if [ -x "$CC" ]; then
             echo "Ok, $CC exists"
           else
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt update -qq
-            sudo apt install -y "gcc-${{ matrix.version }}" "g++-${{ matrix.version }}"
+            sudo apt install -y gcc-${{ matrix.version }} g++-${{ matrix.version }}
+            # No need for gfortran-${{ matrix.version }}
           fi
-          sudo update-alternatives --install /usr/bin/gcc gcc "$CC" 100 --slave /usr/bin/g++ g++ "/usr/bin/g++-${{ matrix.version }}" --slave /usr/bin/gcov gcov "/usr/bin/gcov-${{ matrix.version }}" --slave /usr/bin/gfortran gfortran "/usr/bin/gfortran-${{ matrix.version }}"
+
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.version }} 100 --slave /usr/bin/g++ g++ /usr/bin/g++-${{ matrix.version }} --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ matrix.version }} --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${{ matrix.version }}
           gcc --version
         fi
 
         echo "is_conan2=true" >> "$GITHUB_OUTPUT"
+        export CONAN_HOME="$CONAN_USER_HOME${DIR_SEP}.conan2"
         CONAN_PROFILE_DEFAULT="$CONAN_HOME${DIR_SEP}profiles${DIR_SEP}default"
 
         conan profile detect --force --name default
         conan profile path default
-        cat "$CONAN_PROFILE_DEFAULT"
-        conan profile show
+        cat $CONAN_PROFILE_DEFAULT
+        # Mac has the FreeBSD flavor of sed and MUST take a backup suffix...
+        sed -i.bak 's/cppstd=.*$/cppstd=20/g' $CONAN_PROFILE_DEFAULT
+        # if [ "${{ matrix.compiler}}" == "Visual Studio" ]; then
+        #   # Remove these
+        #   sed -i.bak '/cppstd=.*/d' $CONAN_PROFILE_DEFAULT
+        #   sed -i.bak '/compiler.runtime/d' $CONAN_PROFILE_DEFAULT
+        #   sed -i.bak '/compiler.version/d' $CONAN_PROFILE_DEFAULT
+        #   # Set to visual studio
+        #   sed -i.bak 's/compiler=.*$/compiler=${{ matrix.compiler }}/g' $CONAN_PROFILE_DEFAULT
+        #   sed -i.bak 's/compiler.version=.*$/compiler.version=${{ matrix.version }}/g' $CONAN_PROFILE_DEFAULT
+        # fi
+        rm -Rf $CONAN_PROFILE_DEFAULT.bak || true
+        conan profile show || true
 
-        echo "core:non_interactive = True" >> "$CONAN_HOME/global.conf"
-        echo "core.download:parallel = {{os.cpu_count() - 2}}" >> "$CONAN_HOME/global.conf"
-        echo "core.sources:download_cache = $CONAN_USER_HOME/.conan-download-cache" >> "$CONAN_HOME/global.conf"
-        cat "$CONAN_HOME/global.conf"
+        echo "core:non_interactive = True" >> $CONAN_HOME/global.conf
+        echo "core.download:parallel = {{os.cpu_count() - 2}}" >> $CONAN_HOME/global.conf
+        echo "core.sources:download_cache = $CONAN_USER_HOME/.conan-download-cache" >> $CONAN_HOME/global.conf
+        cat $CONAN_HOME/global.conf
 
         echo CONAN_HOME="$CONAN_HOME" >> $GITHUB_ENV
         echo CONAN_PROFILE_DEFAULT="$CONAN_PROFILE_DEFAULT" >> $GITHUB_ENV
 
-        # Export CFLAGS and CXXFLAGS for warning suppression
-        export CFLAGS="-Wno-strict-prototypes -Wno-shorten-64-to-32 -Wno-unused-variable"
-        export CXXFLAGS="-Wno-strict-prototypes -Wno-shorten-64-to-32 -Wno-unused-variable"
-
-        # Use lowercase based on repository owner
+        # Use lowercase based on repository owner, so that NREL -> nrel.
+        # That should work on forks, while not replacing 'nrel' with '***' everywhere like it does when you set CONAN_USERNAME as a repo secret...
+        # We want BPT/CPT to produces openstudio_ruby/2.7.2@<CONAN_USERNAME>/<channel>
+        # TODO: I actually do NOT want to set it now! so rename to REPO_USERNAME
         REPO_USERNAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
         echo "REPO_USERNAME=$REPO_USERNAME" >> $GITHUB_ENV
 
-        # Add Conan remote
+        # (Can't do that before we've se the CONAN_HOME / CONAN_USER_HOME)
         if [[ "$VERIFY_SSL" == "false" ]]; then
-          conan remote add --force --insecure nrel-v2 http://conan.openstudio.net/artifactory/api/conan/conan-v2
+          conan remote add --force --insecure nrel-v2 http://conan.openstudio.net/artifactory/api/conan/conan-v2 # ${{ secrets.CONAN_UPLOAD }}
         else
-          conan remote add --force nrel-v2 https://conan.openstudio.net/artifactory/api/conan/conan-v2
+          conan remote add --force nrel-v2 https://conan.openstudio.net/artifactory/api/conan/conan-v2 # ${{ secrets.CONAN_UPLOAD }}
         fi
         conan remote list
 
-    - name: Restore Conan Cache
-      uses: actions/cache/restore@v4
-      id: cacheconan-restore
+    - name: Setup Conan Cache
+      uses: actions/cache@v4
+      id: cacheconan
       with:
         path: |
           ${{ env.CONAN_USER_HOME }}/.conan-download-cache
@@ -176,29 +191,21 @@ jobs:
           conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-
           conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-
           conan-cache-${{ matrix.os }}-
+        save-always: ${{ matrix.compiler == 'msvc' }}
 
     - name: Did restoring the conan-cache work? Yes
-      if: steps.cacheconan-restore.outputs.cache-hit == 'true'
+      if: steps.cacheconan.outputs.cache-hit == 'true'
       run: |
         echo "Yes"
-
-    - name: Save Conan Cache
-      uses: actions/cache/save@v4
-      if: success()
-      with:
-        path: |
-          ${{ env.CONAN_USER_HOME }}/.conan-download-cache
-          ${{ env.CONAN_USER_HOME }}/short
-          ${{ env.CONAN_HOME }}/p
-          ${{ env.CONAN_HOME }}/data
-        key: conan-cache-${{ matrix.os }}-compiler=${{ matrix.compiler }}-${{ matrix.version}}-conan-profile=${{ hashFiles(env.CONAN_PROFILE_DEFAULT) }}-recipe-version=${{ matrix.recipe_version}}-cachekey=${{ secrets.CACHE_KEY }}
 
     - name: Build Unix
       if: runner.os != 'Windows'
       shell: bash
       run: |
         set -x
-        conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False'
+        
+        conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' ${{ matrix.build_name == 'apple-clang-15' && format('-s:a compiler.version={0}', matrix.version) || '' }}
+        
         . ../os-gems-deps/conanbuild.sh
         ruby --version
         sqlite3 --version
