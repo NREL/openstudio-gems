@@ -204,7 +204,7 @@ jobs:
       run: |
         set -x
         
-        conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False'
+        conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' ${{ matrix.build_name == 'apple-clang-15' && format('-s:a compiler.version={0}', matrix.version) || '' }}
         
         . ../os-gems-deps/conanbuild.sh
         ruby --version
