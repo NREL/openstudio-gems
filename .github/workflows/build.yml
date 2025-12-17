@@ -38,12 +38,13 @@ jobs:
           compiler: apple-clang
           version: 15
           os: macos-15-intel
-          arch: x86_64
+          xcode-version: "16"
           allow_failure: false
         - build_name: apple-clang-14-armv8
           compiler: apple-clang
           version: 14
           os: macos-14
+          xcode-version: "15"
           allow_failure: false
         - build_name: msvc-2022
           compiler: msvc
@@ -74,7 +75,7 @@ jobs:
     - uses: maxim-lobanov/setup-xcode@v1
       if: runner.os == 'macOS'
       with:
-        xcode-version: '15'
+        xcode-version: ${{ matrix.xcode-version }}
 
     - name: Setup Conan
       id: setup-conan
