@@ -37,7 +37,7 @@ jobs:
         - build_name: apple-clang-15
           compiler: apple-clang
           version: 15
-          os: macos-14
+          os: macos-15-intel
           arch: x86_64
           allow_failure: false
         - build_name: apple-clang-14-armv8
@@ -134,29 +134,22 @@ jobs:
         export CONAN_HOME="$CONAN_USER_HOME${DIR_SEP}.conan2"
         CONAN_PROFILE_DEFAULT="$CONAN_HOME${DIR_SEP}profiles${DIR_SEP}default"
 
-        # For macOS Intel job (apple-clang-15), skip profile detect and use explicit host profile
-        if [ "${{ matrix.build_name }}" == "apple-clang-15" ]; then
-          echo "Using explicit host profile for macOS Intel (x86_64)"
-          export CONAN_HOST_PROFILE="${{ github.workspace }}/conan/profiles/macos-x86_64-appleclang15"
-          echo "CONAN_HOST_PROFILE=$CONAN_HOST_PROFILE" >> $GITHUB_ENV
-        else
-          conan profile detect --force --name default
-          conan profile path default
-          cat $CONAN_PROFILE_DEFAULT
-          # Mac has the FreeBSD flavor of sed and MUST take a backup suffix...
-          sed -i.bak 's/cppstd=.*$/cppstd=20/g' $CONAN_PROFILE_DEFAULT
-          # if [ "${{ matrix.compiler}}" == "Visual Studio" ]; then
-          #   # Remove these
-          #   sed -i.bak '/cppstd=.*/d' $CONAN_PROFILE_DEFAULT
-          #   sed -i.bak '/compiler.runtime/d' $CONAN_PROFILE_DEFAULT
-          #   sed -i.bak '/compiler.version/d' $CONAN_PROFILE_DEFAULT
-          #   # Set to visual studio
-          #   sed -i.bak 's/compiler=.*$/compiler=${{ matrix.compiler }}/g' $CONAN_PROFILE_DEFAULT
-          #   sed -i.bak 's/compiler.version=.*$/compiler.version=${{ matrix.version }}/g' $CONAN_PROFILE_DEFAULT
-          # fi
-          rm -Rf $CONAN_PROFILE_DEFAULT.bak || true
-          conan profile show || true
-        fi
+        conan profile detect --force --name default
+        conan profile path default
+        cat $CONAN_PROFILE_DEFAULT
+        # Mac has the FreeBSD flavor of sed and MUST take a backup suffix...
+        sed -i.bak 's/cppstd=.*$/cppstd=20/g' $CONAN_PROFILE_DEFAULT
+        # if [ "${{ matrix.compiler}}" == "Visual Studio" ]; then
+        #   # Remove these
+        #   sed -i.bak '/cppstd=.*/d' $CONAN_PROFILE_DEFAULT
+        #   sed -i.bak '/compiler.runtime/d' $CONAN_PROFILE_DEFAULT
+        #   sed -i.bak '/compiler.version/d' $CONAN_PROFILE_DEFAULT
+        #   # Set to visual studio
+        #   sed -i.bak 's/compiler=.*$/compiler=${{ matrix.compiler }}/g' $CONAN_PROFILE_DEFAULT
+        #   sed -i.bak 's/compiler.version=.*$/compiler.version=${{ matrix.version }}/g' $CONAN_PROFILE_DEFAULT
+        # fi
+        rm -Rf $CONAN_PROFILE_DEFAULT.bak || true
+        conan profile show || true
 
         echo "core:non_interactive = True" >> $CONAN_HOME/global.conf
         echo "core.download:parallel = {{os.cpu_count() - 2}}" >> $CONAN_HOME/global.conf
@@ -210,24 +203,14 @@ jobs:
       run: |
         set -x
         
-        # For macOS Intel job, run under Rosetta and use explicit host profile
-        if [ "${{ matrix.build_name }}" == "apple-clang-15" ]; then
-          export CONAN_HOST_PROFILE="${{ github.workspace }}/conan/profiles/macos-x86_64-appleclang15"
-          arch -x86_64 conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' --profile:host="$CONAN_HOST_PROFILE" --profile:build=default
-        else
-          conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False'
-        fi
+        conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False'
         
         . ../os-gems-deps/conanbuild.sh
         ruby --version
         sqlite3 --version
         echo $PKG_CONFIG_PATH
         gem install rake
-        if [ "${{ matrix.build_name }}" == "apple-clang-15" ]; then
-          arch -x86_64 rake make_package
-        else
-          rake make_package
-        fi
+        rake make_package
 
     - name: Build Windows
       if: runner.os == 'Windows'
