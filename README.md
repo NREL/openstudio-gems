@@ -68,7 +68,6 @@ DATE=20230427 rake make_package
 
 # Releasing
 
-* Update change log
 * Merge down to master
 * Release via github
 * run `rake release` from master
