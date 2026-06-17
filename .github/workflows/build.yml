@@ -26,7 +26,7 @@ jobs:
       # fail-fast: Default is true, switch to false to allow one platform to fail and still run others
       fail-fast: false
       matrix:
-        build_name: [gcc-10, apple-clang-15, apple-clang-14-armv8, msvc-2022, gcc-10-arm64]
+        build_name: [gcc-10, apple-clang-15, apple-clang-14-armv8, msvc-2022, msvc-2022-arm64, gcc-10-arm64]
         include:
         - build_name: gcc-10
           compiler: gcc
@@ -50,7 +50,14 @@ jobs:
           compiler: msvc
           version: 194
           os: windows-2022
+          vs_arch: amd64
           allow_failure: false
+        - build_name: msvc-2022-arm64
+          compiler: msvc
+          version: 194
+          os: windows-11-arm
+          vs_arch: arm64
+          allow_failure: true
         - build_name: gcc-10-arm64
           compiler: gcc
           version: 10
@@ -99,7 +106,7 @@ jobs:
         echo CONAN_USER_HOME="$CONAN_USER_HOME" >> $GITHUB_ENV
         if [ "$RUNNER_OS" == "macOS" ]; then
           brew install md5sha1sum
-          
+
           sdk_path=$(xcrun --sdk macosx --show-sdk-path)
           echo "sdk_path=$sdk_path" >> $GITHUB_ENV
           python -c "import os; print(os.path.realpath('$sdk_path'))"
@@ -203,9 +210,9 @@ jobs:
       shell: bash
       run: |
         set -x
-        
+
         conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' ${{ matrix.build_name == 'apple-clang-15' && format('-s:a compiler.version={0}', matrix.version) || '' }}
-        
+
         . ../os-gems-deps/conanbuild.sh
         ruby --version
         sqlite3 --version
@@ -225,7 +232,7 @@ jobs:
         $vspath=$(vswhere -products '*' -requires Microsoft.Component.MSBuild -property installationPath -latest)
         $devShellModule = "$vspath\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
         Import-Module $devShellModule
-        Enter-VsDevShell -VsInstallPath $vspath -SkipAutomaticLocation -Arch amd64
+        Enter-VsDevShell -VsInstallPath $vspath -SkipAutomaticLocation -Arch ${{ matrix.vs_arch }}
         conan install . --output-folder=../os-gems-deps --build=missing -s:a build_type=Release -s:a compiler.cppstd=20 -o '*/*:shared=False' -c tools.env.virtualenv:powershell=True
         & ..\os-gems-deps\conanbuild.ps1
         ruby --version
