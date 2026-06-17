@@ -53,7 +53,11 @@ def make_package(install_dir, tar_exe, expected_ruby_version, bundler_version)
 
   is_unix = true
   if /mswin/.match(RUBY_PLATFORM)
-    platform_prefix = "windows"
+    if /arm64/.match(RUBY_PLATFORM)
+      platform_prefix = "windows_arm64"
+    else
+      platform_prefix = "windows"
+    end
     is_unix = false
   elsif /darwin/.match(RUBY_PLATFORM)
     if /arm64/.match(RUBY_PLATFORM)
